@@ -1,3 +1,4 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,11 +111,18 @@
     
 
     .logo {
-      font-size: 24px;
-      font-family: 'Orbitron', sans-serif;
-      color: #000;
+      width : 150px;
+        height : 150px;
+        border-radius: 50%;
+        overflow: hidden;
     }
-
+    .logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      
     @keyframes neon-glow {
       0% { box-shadow: 0 0 10px cyan; }
       100% { box-shadow: 0 0 30px cyan; }
@@ -227,7 +235,9 @@
     <body class="light">
         <nav class="navbar">
           <p id="modes"></p>
-          <div class="logo">EduGenie</div>
+          <div class="logo">
+            <img src='{%static 'logo.png'%}'/>
+          </div>
           <a href="/" class="element">Home</a>
           <a href="about_us/" class="element">About us</a>
           <a href="testimonials/" class="element">Testimonials</a>
