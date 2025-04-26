@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduGenie</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+    body.light {
+      background: #fff;
+      transition: background 0.4s;
+      color: #000;
+    }
+
+    body.dark {
+      background: #0b0b2c;
+      transition: background 0.4s;
+      color: cyan;
+    }
+
+    .toggle {
+      width: 80px;
+      height: 80px;
+      background: #f0f0f0;
+      border-radius: 50%;
+      overflow: hidden;
+      transition: background 0.4s, transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .toggle:hover {
+      transform: scale(1.25);
+      background: #ddd;
+    }
+
+    .rocket-wrapper {
+      position: relative;
+      width: 50px;
+      height: 50px;
+    }
+
+    .rocket-outline {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: red;
+      border-radius: 50%;
+      filter: blur(8px);
+      opacity: 0.7;
+      z-index: 0;
+    }
+
+    .rocket {
+      position: absolute;
+      font-size: 32px;
+      z-index: 1;
+      transition: transform 1s ease;
+    }
+
+    .dark .rocket {
+      transform: translateY(-120px);
+    }
+
+    .dark .rocket-outline {
+      background: blue;
+    }
+
+    .dark .content,
+    .dark #modes {
+      color: cyan;
+    }
+
+    #modes {
+      max-width: 70px;
+      margin: 0;
+      font-size: 14px;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .pos {
+      margin-right: 100px;
+    }
+    .navbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(12px);
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      border-bottom: 2px solid #ccc;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    .dark .navbar {
+      background: rgba(0, 0, 40, 0.4);
+      border-bottom: 2px solid cyan;
+    }
+
+    
+
+    .logo {
+      font-size: 24px;
+      font-family: 'Orbitron', sans-serif;
+      color: #000;
+    }
+
+    @keyframes neon-glow {
+      0% { box-shadow: 0 0 10px cyan; }
+      100% { box-shadow: 0 0 30px cyan; }
+    }
+
+    .dark .logo {
+      color: cyan;
+      text-shadow: 0 0 10px cyan;
+      animation: neon-glow 1.5s infinite alternate; 
+      border: none;
+      outline: none;
+    }
+
+    @keyframes floatIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo.float-in {
+      animation: floatIn 1.0s ease;
+    }
+    
+  .element {
+    font-size: 18px;
+    font-family: 'Orbitron', sans-serif;
+    margin: 0 10px;
+    text-decoration: none;
+    transition: 0.3s ease;
+    position: relative;
+    padding: 6px 10px;
+  }
+
+  .element:hover {
+    transform: scale(1.1);
+  }
+
+  .dark .element {
+    color: cyan;
+    text-shadow: 0 0 10px cyan;
+  }
+
+  .element::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    left: 50%;
+    bottom: -5px;
+    background: red;
+    transition: width 0.3s ease, left 0.3s ease;
+  }
+
+  .element:hover::after {
+    width: 100%;
+    left: 0;
+  }
+
+  .dark .element::after {
+    background: cyan;
+  }
+
+    .dark .element.float-in{
+      animation: floatIn 1.0s ease;
+    }
+    .chatbot-icon {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      cursor: pointer;
+      z-index: 1000;
+      text-align: center;
+
+    }
+    .robot {
+      width: 150px;
+      transition: transform 0.3s ease;
+      animation: wave-hand 2s infinite ease-in-out;
+      filter : drop-shadow(0 0 5px cyan) drop-shadow(0 0 10px cyan);
+    }
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+    
+    /* Hand waving effect (simplified) */
+    @keyframes wave-hand {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(15deg); }
+      40% { transform: rotate(-10deg); }
+      60% { transform: rotate(15deg); }
+      80% { transform: rotate(-5deg); }
+    }
+    .chatbot-icon:hover .robot {
+      transform: scale(2.0);
+    }    
+
+  </style>
+</head>
+<body>
+    <body class="light">
+        <nav class="navbar">
+          <p id="modes"></p>
+          <div class="logo">EduGenie</div>
+          <a href="/" class="element">Home</a>
+          <a href="about_us/" class="element">About us</a>
+          <a href="testimonials/" class="element">Testimonials</a>
+          <a href="contact_us/" class="element">Contact us</a>
+      
+          <div class="pos">
+            <button id="themeToggle" class="toggle">
+              <div class="rocket-wrapper">
+                <div class="rocket-outline"></div>
+                <div class="rocket" id="rocket">🚀</div>
+              </div>
+            </button>
+          </div>
+        </nav>  
+</body>
+<script>
+    const btn = document.getElementById("themeToggle");
+const logo = document.querySelector(".logo");
+const rocket = document.getElementById("rocket");
+
+
+function triggerFloatIn() {
+  logo.classList.remove("float-in");
+  void logo.offsetWidth;
+  logo.classList.add("float-in");
+}
+
+btn.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  document.body.classList.toggle("light");
+
+  document.getElementById("modes").textContent =
+    document.body.classList.contains("dark") ? "dark mode" : "";
+
+  rocket.textContent = document.body.classList.contains("dark") ? "🌙" : "🚀";
+
+  const isDarkMode = document.body.classList.contains("dark");
+  document.getElementById("spline-dark").style.display = isDarkMode ? "block" : "none";
+  document.getElementById("spline-light").style.display = isDarkMode ? "none" : "block";
+
+  triggerFloatIn();
+});
+
+</script>
+</html>
