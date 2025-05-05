@@ -3,6 +3,7 @@ from .models import Student
 
 class SignupForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
+    school_student = forms.BooleanField(label="Are you a school student?")
     class Meta:
         model = Student
         fields = [
