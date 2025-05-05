@@ -6,9 +6,17 @@ def home(request):
 def about_us(request):
     return render(request, 'about_us.html')
 def signup(request):
-    form = SignupForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return render(request, 'home.html', {'form': form, 'success': True})
+    if request.method == 'POST':
+       form = SignupForm(request.POST or None)
+       if form.is_valid():
+          form.save()
+          is_student = form.cleaned_data.get('school_student')
+          if is_student:
+            return render(request, 'stud.html', {'form': form, 'success': True})
+          else:
+            return render(request, 'new.html', {'form': form, 'success': True})
+       else:
+            return render(request, 'sign_up.html', {'form': form}) 
     else:
+        form = SignupForm() 
         return render(request, 'sign_up.html', {'form': form})
