@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .forms import SignupForm, SigninForm
+from .models import Student
 # Create your views here.
 def home(request):
     return render(request, 'home.html')
@@ -20,3 +21,19 @@ def signup(request):
     else:
         form = SignupForm() 
         return render(request, 'sign_up.html', {'form': form})
+    
+def signin(request):
+   if request.method == "POST":
+      form = SigninForm(request.POST or None)
+      if form.is_valid():
+          name = form.cleaned_data.get('name')
+          password = form.cleaned_data.get('password')
+          try:
+             student = Student.objects.get(name=name, password=password)
+             return render(request, 'home.html', {'form': form})
+          except Student.DoesNotExist:
+             form.add_error(None, "Invalid username or password")
+      return render(request, 'sign_in.html', {'form': form})
+   else:
+      form = SigninForm()
+      return render(request, 'sign_in.html', {'form': form})
