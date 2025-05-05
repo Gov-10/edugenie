@@ -28,9 +28,13 @@ def signin(request):
       if form.is_valid():
           name = form.cleaned_data.get('name')
           password = form.cleaned_data.get('password')
+          stud = form.cleaned_data.get('stud')  # Checkbox value
           try:
              student = Student.objects.get(name=name, password=password)
-             return render(request, 'home.html', {'form': form})
+             if stud:  # If checkbox is ticked
+                return render(request, 'stud.html', {'form': form, 'success': True})
+             else:  # If checkbox is not ticked
+                return render(request, 'new.html', {'form': form, 'success': True})
           except Student.DoesNotExist:
              form.add_error(None, "Invalid username or password")
       return render(request, 'sign_in.html', {'form': form})

@@ -16,4 +16,5 @@ class SignupForm(forms.ModelForm):
 class SigninForm(forms.Form):
     name = forms.CharField(max_length=100, required=True)
     password = forms.CharField(required=True, widget=forms.PasswordInput)
+    stud = forms.BooleanField(required=False, label= "Are you a school student?")
 
