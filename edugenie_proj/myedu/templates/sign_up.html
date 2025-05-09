@@ -9,7 +9,7 @@
     <style>
         @keyframes fadeInUp {
             0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0.95; transform: translateY(0); }
         }
 
         body {
@@ -225,5 +225,12 @@
         <h4>Have an account? <a href="/sign_in/">Sign In</a></h4>
     </div>
 </body>
+<script>
+document.body.style.backgroundImage = "url('/static/logo.png')";
+    document.body.style.backgroundSize = 'cover';
+document.body.style.backgroundRepeat = 'no-repeat';
+document.body.style.backgroundPosition = 'center';
+document.body.style.backgroundAttachment = 'fixed';
+</script>
 </html>
 {% endblock %}
