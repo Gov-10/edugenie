@@ -152,7 +152,18 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(122, 92, 245, 0.3);
         }
-
+        h4 a {
+            font-size: 1rem;
+            color: #7a5cf5;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            z-index: 10;  /* Ensure the link is above the background */
+            position: relative; 
+        }
+        
+        h4 a:hover {
+            color: #ba4dfc;
+        }
     </style>
 </head>
 <body>
@@ -164,11 +175,25 @@
             <div class="form-group">
                 {{ form.name }}
                 <label for="{{ form.name.id_for_label }}">Full Name</label>
+                {% if form.name.errors %}
+        <div style="color: red; font-size: 0.85rem; margin-top: 0.3rem;">
+            {% for error in form.name.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
             </div>
 
             <div class="form-group">
                 {{ form.email }}
                 <label for="{{ form.email.id_for_label }}">Email Address</label>
+                {% if form.email.errors %}
+        <div style="color: red; font-size: 0.85rem; margin-top: 0.3rem;">
+            {% for error in form.email.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
             </div>
 
             <div class="form-group">
@@ -181,8 +206,16 @@
                 <label for="{{ form.school_student.id_for_label }}">I am a school student</label>
             </div>
 
+            {% if form.non_field_errors %}
+            <div style="color: red; font-size: 0.9rem; margin-bottom: 1rem;">
+                {% for error in form.non_field_errors %}
+                    <p><b>{{ error }}<b></p>
+                {% endfor %}
+            </div>
+        {% endif %}
             <button type="submit" class="submit-btn">Save</button>
         </form>
+        <h4>Have an account? <a href="/sign_in/">Sign In</a></h4>
     </div>
 </body>
 </html>

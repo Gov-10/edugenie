@@ -1,15 +1,13 @@
-
-
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sign Up</title>
+    <title>Sign In</title>
     <style>
         @keyframes fadeInUp {
             0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0.95; transform: translateY(0); }
         }
         .form-subtitle {
             text-align: center;
@@ -18,7 +16,6 @@
             margin-bottom: 30px;
         }
         body {
-            background: linear-gradient(135deg, #c3ecf8, #f9d5ec);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
@@ -157,7 +154,18 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(122, 92, 245, 0.3);
         }
-
+        h4 a {
+            font-size: 1rem;
+            color: #7a5cf5;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            z-index: 10;  /* Ensure the link is above the background */
+            position: relative; 
+        }
+        
+        h4 a:hover {
+            color: #ba4dfc;
+        }
     </style>
 </head>
 <body>
@@ -181,11 +189,25 @@
                 {{ form.stud }}
                 <label for="{{ form.school_student.id_for_label }}">I am a school student</label>
             </div>
-
-            <button type="submit" class="submit-btn">Sign In</button>
+            {% if form.non_field_errors %}
+    <div style="color: red; font-size: 0.9rem; margin-bottom: 1rem;">
+        {% for error in form.non_field_errors %}
+            <p><b>{{ error }}<b></p>
+        {% endfor %}
+    </div>
+{% endif %}
+            <button type="submit" class="submit-btn">Sign In</button><br>
         </form>
+        <h4>Don't have an account? <a href="/sign_up/">Sign Up</a></h4>
     </div>
 </body>
+<script>
+    document.body.style.backgroundImage = "url('/static/logo.png')";
+    document.body.style.backgroundSize = 'cover';
+document.body.style.backgroundRepeat = 'no-repeat';
+document.body.style.backgroundPosition = 'center';
+document.body.style.backgroundAttachment = 'fixed';
+</script>
 </html>
 {% endblock %}
 
