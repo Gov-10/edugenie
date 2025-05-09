@@ -199,6 +199,13 @@
             <div class="form-group">
                 {{ form.password }}
                 <label for="{{ form.password.id_for_label }}">Password</label>
+                {% if form.password.errors %}
+        <div style="color: red; font-size: 0.85rem; margin-top: 0.3rem;">
+            {% for error in form.password.errors %}
+                <p><b>{{ error }}<b></p>
+            {% endfor %}
+        </div>
+    {% endif %}
             </div>
 
             <div class="checkbox-group">

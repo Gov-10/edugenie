@@ -2,7 +2,7 @@ from django import forms
 from .models import Student
 
 class SignupForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
+    password = forms.CharField(max_length=10,widget=forms.PasswordInput)
     school_student = forms.BooleanField(required=False,label="Are you a school student?")
     class Meta:
         model = Student
