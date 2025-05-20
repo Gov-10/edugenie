@@ -5,8 +5,9 @@ from .utils import send_email, student_token_generator
 from django.contrib.auth.hashers import check_password
 from django.urls import reverse
 from django.contrib import messages
-from django.utils.http import urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 import logging
+from django.utils.encoding import force_bytes
 
 def home(request):
     return render(request, 'home.html')
@@ -91,3 +92,4 @@ def signin(request):
     else:
         form = SigninForm()
         return render(request, 'sign_in.html', {'form': form})
+    
