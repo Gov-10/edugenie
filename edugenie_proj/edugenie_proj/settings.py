@@ -32,7 +32,27 @@ SECRET_KEY = 'django-insecure-txuiioamhahbmssmo1ne64km+*$oc%h4(%38#3%_ro3w2)@a*c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+CORS_ALLOW_ALL_ORIGINS = True  # Change from True to False
+
+CORS_ALLOWED_ORIGINS = ['*']
+
+CSRF_TRUSTED_ORIGINS = ['https://ad46-2409-40c2-4053-85a6-acc3-6696-8f20-f05f.ngrok-free.app']
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "DELETE",
+    "OPTIONS"
+]
+SESSION_COOKIE_SAMESITE = None
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = None
+
+CORS_ALLOW_CREDENTIALS = True
 
 
 # Application definition
