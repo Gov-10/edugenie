@@ -38,7 +38,7 @@ CORS_ALLOW_ALL_ORIGINS = True  # Change from True to False
 
 CORS_ALLOWED_ORIGINS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['https://ad46-2409-40c2-4053-85a6-acc3-6696-8f20-f05f.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://edee-2409-40c2-4053-85a6-c54d-29d2-751d-2210.ngrok-free.app']
 
 CORS_ALLOW_METHODS = [
     "GET",
@@ -101,13 +101,26 @@ WSGI_APPLICATION = 'edugenie_proj.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django_cockroachdb',
+        'NAME': 'defaultdb',
+        'USER': 'govind',
+        'PASSWORD': 'nDj2wKYk_F466PaOOaQReQ',
+        'HOST': 'minor-codfish-11880.j77.aws-ap-south-1.cockroachlabs.cloud',
+        'PORT': '26257',
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
