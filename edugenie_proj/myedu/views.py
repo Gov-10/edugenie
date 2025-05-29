@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 import logging
 from django.utils.encoding import force_bytes
+from django.views.decorators.csrf import csrf_exempt
 
 def home(request):
     return render(request, 'home.html')
@@ -36,6 +37,7 @@ def verify_email(request, uidb64, token):
         messages.error(request, "Invalid verification link.")
         return render(request, 'sign_up.html')
 
+# @csrf_exempt   #uncomment this line if you want to use locust for load testing
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
