@@ -112,8 +112,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django_cockroachdb',
         'NAME': 'defaultdb',
-        'USER': 'govind',
-        'PASSWORD': 'nDj2wKYk_F466PaOOaQReQ',
+        'USER': os.getenv("USER"),
+        'PASSWORD': os.getenv("PASSWORD"),
         'HOST': 'minor-codfish-11880.j77.aws-ap-south-1.cockroachlabs.cloud',
         'PORT': '26257',
         'OPTIONS': {
