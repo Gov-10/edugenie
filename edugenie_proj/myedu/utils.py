@@ -28,7 +28,6 @@ def send_email(student, request):
         
         verification_url = request.build_absolute_uri(f'/verify/{uid}/{token}/')
         
-        subject = "Welcome to EduGenie, verify your email"
         message = (
             f"Hi {student.name}, thanks for choosing EduGenie!\n\n"
             f"Please click the link below to verify your email and activate your account:\n"
@@ -45,7 +44,7 @@ def send_email(student, request):
         
         # Send the email
         send_result = send_mail(
-            subject=subject,
+            subject=f"Verify your email",
             message=message,
             from_email=email_from,
             recipient_list=recipient_list,
@@ -59,6 +58,51 @@ def send_email(student, request):
         
         return send_result
         
+    except Exception as e:
+        logging.error(f"Email sending failed: {str(e)}")
+        raise e
+    
+def send_reset(student, request, subject=None, message=None, url_path=None, token=None):
+    try:
+        uid = urlsafe_base64_encode(force_bytes(student.pk))
+
+        if not token:
+            token = str(student.email_token)
+
+        # Generate full URL
+        if url_path:
+            url = request.build_absolute_uri(f'{url_path}/{uid}/{token}/')
+        else:
+            url = "#"
+
+        if not message:
+            message = (
+                f"Hi {student.name}, thanks for choosing EduGenie!\n\n"
+                f"Please click the link below:\n{url}\n\n"
+                f"If you did not make this request, please ignore this email."
+            )
+
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [student.email]
+
+        logging.info(f"Sending email to {student.email}")
+        logging.info(f"Email URL: {url}")
+
+        send_result = send_mail(
+            subject=subject,
+            message=message,
+            from_email=email_from,
+            recipient_list=recipient_list,
+            fail_silently=False
+        )
+
+        if send_result:
+            logging.info(f"Email sent successfully to {student.email}")
+        else:
+            logging.error(f"Failed to send email to {student.email}")
+
+        return send_result
+
     except Exception as e:
         logging.error(f"Email sending failed: {str(e)}")
         raise e

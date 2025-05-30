@@ -38,7 +38,7 @@ CORS_ALLOW_ALL_ORIGINS = True  # Change from True to False
 
 CORS_ALLOWED_ORIGINS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['https://edee-2409-40c2-4053-85a6-c54d-29d2-751d-2210.ngrok-free.app', 'http://localhost:8089']
+CSRF_TRUSTED_ORIGINS = ['https://d2cd-2409-40c2-404f-fc1e-8941-6bf1-f9b2-4079.ngrok-free.app', 'http://localhost:8089']
 
 CORS_ALLOW_METHODS = [
     "GET",

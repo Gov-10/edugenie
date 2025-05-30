@@ -1,14 +1,16 @@
 from django.shortcuts import render, redirect
-from .forms import SignupForm, SigninForm
+from .forms import SignupForm, SigninForm,PasswordResetForm, SetNewPassword
 from .models import Student
-from .utils import send_email, student_token_generator
-from django.contrib.auth.hashers import check_password
+from .utils import send_email, student_token_generator, send_reset
+from django.contrib.auth.hashers import check_password, make_password
 from django.urls import reverse
 from django.contrib import messages
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 import logging
 from django.utils.encoding import force_bytes
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt 
+from django.contrib.auth.decorators import login_required
+
 
 def home(request):
     return render(request, 'home.html')
@@ -37,7 +39,7 @@ def verify_email(request, uidb64, token):
         messages.error(request, "Invalid verification link.")
         return render(request, 'sign_up.html')
 
-# @csrf_exempt   #uncomment this line if you want to use locust for load testing
+#@csrf_exempt   #uncomment this line if you want to use locust for load testing
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
@@ -95,3 +97,51 @@ def signin(request):
         form = SigninForm()
         return render(request, 'sign_in.html', {'form': form})
     
+def passwordreset(request):
+    if request.method == "POST":
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            try:
+                student = Student.objects.get(email = email)
+                uid = urlsafe_base64_encode(force_bytes(student.pk))
+                token = student_token_generator.make_token(student)
+                reset_link = request.build_absolute_uri(
+                    reverse('reset_password_confirm', kwargs={'uidb64': uid, 'token': token})
+                )
+                send_reset(
+                    student, 
+                    request, 
+                    subject = f"EduGenie password reset request",
+                    message=f"Click here to reset your password: {reset_link}"
+                )
+                messages.success(request, "Reset link sent to your email.")
+                return redirect('sign_in')
+
+            except Student.DoesNotExist:
+                form.add_error('email', "No account found with this email.")
+    else:
+        form = PasswordResetForm()
+
+    return render(request, 'password_reset.html', {'form': form})
+
+def reset_password_confirm(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        student = Student.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, Student.DoesNotExist):
+        student = None
+
+    if student and student_token_generator.check_token(student, token):
+        if request.method == "POST":
+            form = SetNewPassword(request.POST, instance=student)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Password updated! You can sign in now.")
+                return redirect('sign_in')
+        else:
+            form = SetNewPassword()
+        return render(request, 'set_password.html', {'form': form})
+    else:
+        messages.error(request, "Invalid or expired reset link.")
+        return redirect('sign_in')
