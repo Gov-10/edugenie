@@ -116,7 +116,7 @@ def passwordreset(request):
                     message=f"Click here to reset your password: {reset_link}"
                 )
                 messages.success(request, "Reset link sent to your email.")
-                return redirect('sign_in')
+                return render(request, 'pass_set.html')
 
             except Student.DoesNotExist:
                 form.add_error('email', "No account found with this email.")
