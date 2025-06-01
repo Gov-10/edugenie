@@ -3,7 +3,7 @@ from .models import Student
 from django.contrib.auth.hashers import make_password
 
 class SignupForm(forms.ModelForm):
-    password = forms.CharField(max_length=8,widget=forms.PasswordInput, label="Password")
+    password = forms.CharField(max_length=128,widget=forms.PasswordInput, label="Password")
     school_student = forms.BooleanField(required=False,label="Are you a school student?")
     class Meta:
         model = Student
@@ -49,7 +49,7 @@ class SetNewPassword(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True):
-        student = super().save(commit=False)
+        student = self.instance
         student.password = make_password(self.cleaned_data["new_password"])
         if commit:
             student.save()

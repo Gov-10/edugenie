@@ -140,7 +140,7 @@ def reset_password_confirm(request, uidb64, token):
                 messages.success(request, "Password updated! You can sign in now.")
                 return redirect('sign_in')
         else:
-            form = SetNewPassword()
+            form = SetNewPassword(instance=student)  # <-- Fix here
         return render(request, 'set_password.html', {'form': form})
     else:
         messages.error(request, "Invalid or expired reset link.")

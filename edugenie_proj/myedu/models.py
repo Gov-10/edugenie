@@ -8,7 +8,7 @@ import uuid
 class Student(models.Model):
     name = models.CharField(max_length = 120)
     email = models.EmailField(max_length = 120, unique = True)
-    password = models.CharField(max_length = 120)
+    password = models.CharField(max_length = 128)
     school_student = models.BooleanField(default = False)
     email_token = models.UUIDField(default=uuid.uuid4)
     is_verified = models.BooleanField(default = False)
