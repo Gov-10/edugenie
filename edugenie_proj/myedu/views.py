@@ -178,8 +178,11 @@ def signup(request):
             student = form.save(commit=False) #commit = False prevents data from getting stored in the DB
             student.is_active = False
             student.save()  
-            ActivateEmail(request,student,form.cleaned_data.get('email'))
-            return redirect('sign_in')
+            if ActivateEmail(request, student, form.cleaned_data.get('email')):
+                messages.success(request, f'Email activation link has been sent to <b>{student.email}</b>')
+                return render(request, 'email_verification_sent.html') 
+            else:
+                messages.error(request, "Failed to send email, kindly check if you typed it correct")
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
@@ -244,8 +247,4 @@ def ActivateEmail(request,user, to_email):
          "protocol": 'https' if request.is_secure() else 'http'
     })
     email = EmailMessage(mail_subject, message, to=[to_email])
-    if email.send():
-         messages.success(request, f'Email activation link has been sent to <b>{to_email}</b>')
-         return render(request, 'email_verification_sent.html')
-    else:
-        messages.error(request, "Failed to send email, kindly check if you typed it correct")
+    return email.send()

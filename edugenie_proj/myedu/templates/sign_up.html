@@ -1,6 +1,6 @@
 
 
-{% block content %}
+ {% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -166,65 +166,6 @@
         }
     </style>
 </head>
-{% comment %} <body>
-    <div class="form-container">
-        <h2>Sign Up</h2>
-        <form method="POST">
-            {% csrf_token %}
-
-            <div class="form-group">
-                {{ form.name }}
-                <label for="{{ form.name.id_for_label }}">Full Name</label>
-                {% if form.name.errors %}
-        <div style="color: red; font-size: 0.85rem; margin-top: 0.3rem;">
-            {% for error in form.name.errors %}
-                <p>{{ error }}</p>
-            {% endfor %}
-        </div>
-    {% endif %}
-            </div>
-
-            <div class="form-group">
-                {{ form.email }}
-                <label for="{{ form.email.id_for_label }}">Email Address</label>
-                {% if form.email.errors %}
-        <div style="color: red; font-size: 0.85rem; margin-top: 0.3rem;">
-            {% for error in form.email.errors %}
-                <p>{{ error }}</p>
-            {% endfor %}
-        </div>
-    {% endif %}
-            </div>
-
-            <div class="form-group">
-                {{ form.password }}
-                <label for="{{ form.password.id_for_label }}">Password</label>
-                {% if form.password.errors %}
-        <div style="color: red; font-size: 0.85rem; margin-top: 0.3rem;">
-            {% for error in form.password.errors %}
-                <p><b>{{ error }}<b></p>
-            {% endfor %}
-        </div>
-    {% endif %}
-            </div>
-
-            <div class="checkbox-group">
-                {{ form.school_student }}
-                <label for="{{ form.school_student.id_for_label }}">I am a school student</label>
-            </div>
-
-            {% if form.non_field_errors %}
-            <div style="color: red; font-size: 0.9rem; margin-bottom: 1rem;">
-                {% for error in form.non_field_errors %}
-                    <p><b>{{ error }}<b></p>
-                {% endfor %}
-            </div>
-        {% endif %}
-            <button type="submit" class="submit-btn">Save</button>
-        </form>
-        <h4>Have an account? <a href="/sign_in/">Sign In</a></h4>
-    </div>
-</body> {% endcomment %}
 <body>
   <div class="form-container">
     <h2>Sign Up</h2>
@@ -312,3 +253,4 @@ document.body.style.backgroundAttachment = 'fixed';
 </script>
 </html>
 {% endblock %}
+
