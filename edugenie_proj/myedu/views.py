@@ -249,6 +249,8 @@ def ActivateEmail(request,user, to_email):
     email = EmailMessage(mail_subject, message, to=[to_email])
     return email.send()
 
+def testimonials(request):
+    return render(request, 'testimonials.html')
 # def verify_recaptcha(token):
 #     """Helper function to verify reCAPTCHA"""
 #     import requests
