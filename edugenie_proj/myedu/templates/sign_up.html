@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
+    {% comment %} <script src="https://www.google.com/recaptcha/api.js" async defer></script> {% endcomment %}
     <style>
         @keyframes fadeInUp {
             0% { opacity: 0; transform: translateY(20px); }
@@ -230,6 +231,10 @@
         <label for="{{ form.school_student.id_for_label }}">I am a school student</label>
       </div>
 
+{% comment %} 
+      <div class="form-group">
+                <div class="g-recaptcha" data-sitekey="{{ RECAPTCHA_PUBLIC_KEY }}"></div>
+            </div> {% endcomment %}
       <!-- Non-field errors -->
       {% if form.non_field_errors %}
         <div class="form-error">
@@ -238,7 +243,7 @@
           {% endfor %}
         </div>
       {% endif %}
-
+      
       <button type="submit" class="submit-btn">Register</button>
     </form>
     <h4>Already have an account? <a href="{% url 'sign_in' %}">Sign In</a></h4>

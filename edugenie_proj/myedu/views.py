@@ -248,3 +248,26 @@ def ActivateEmail(request,user, to_email):
     })
     email = EmailMessage(mail_subject, message, to=[to_email])
     return email.send()
+
+# def verify_recaptcha(token):
+#     """Helper function to verify reCAPTCHA"""
+#     import requests
+#     from django.conf import settings
+    
+#     data = {
+#         'secret': settings.RECAPTCHA_PRIVATE_KEY,
+#         'response': token
+#     }
+    
+#     try:
+#         response = requests.post(
+#             'https://www.google.com/recaptcha/api/siteverify',
+#             data=data,
+#             timeout=10
+#         )
+#         result = response.json()
+#         return result.get('success', False)
+#     except:
+#         return False
+
+

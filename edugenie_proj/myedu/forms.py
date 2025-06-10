@@ -64,7 +64,43 @@ from .models import Student
 from django.contrib.auth.forms import UserCreationForm
 import uuid
 from django.contrib.auth.hashers import make_password
+from django.core.exceptions import ValidationError
+from django.conf import settings
+import requests
 
+
+class RecaptchaWidget(forms.Widget):
+    def render(self, name, value, attrs=None, renderer=None):
+        return f'<div class="g-recaptcha" data-sitekey="{settings.RECAPTCHA_PUBLIC_KEY}"></div>'
+
+class RecaptchaField(forms.CharField):
+    widget = RecaptchaWidget
+    
+    def __init__(self, *args, **kwargs):
+        kwargs['required'] = True
+        super().__init__(*args, **kwargs)
+    
+    def validate(self, value):
+        super().validate(value)
+        if not self.verify_recaptcha(value):
+            raise ValidationError('reCAPTCHA verification failed')
+    
+    def verify_recaptcha(self, token):
+        data = {
+            'secret': settings.RECAPTCHA_PRIVATE_KEY,
+            'response': token
+        }
+        
+        try:
+            response = requests.post(
+                'https://www.google.com/recaptcha/api/siteverify',
+                data=data,
+                timeout=10
+            )
+            result = response.json()
+            return result.get('success', False)
+        except:
+            return False
 class SignupForm(UserCreationForm):
     email = forms.EmailField(required=True)
     school_student = forms.BooleanField(required=False,label="Are you a school student?" )
@@ -84,6 +120,7 @@ class SigninForm(forms.Form):
     username = forms.CharField(max_length=150, required=True)
     password = forms.CharField(widget=forms.PasswordInput, required=True)
     stud = forms.BooleanField(required=False, label="Are you a school student?")
+
 
 class PasswordResetForm(forms.Form):
     email = forms.EmailField(required = True, max_length= 200)
