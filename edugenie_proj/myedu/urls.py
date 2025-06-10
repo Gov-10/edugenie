@@ -7,11 +7,7 @@ urlpatterns = [
     path('about_us/', views.about_us, name='about_us'),
     path('sign_up/', views.signup, name='sign_up'),
     path('sign_in/', views.signin, name = "sign_in" ),
-    path('verify/<uidb64>/<token>/', views.verify_email, name='verify_email'),
-    path('reset_password/', views.passwordreset, name='reset_password_request'),
-    path('reset/<uidb64>/<token>/', views.reset_password_confirm, name='reset_password_confirm'),
- 
-]
+    path('activate/<uidb64>/<token>/', views.activate, name='activate'),]
 
 
 '''

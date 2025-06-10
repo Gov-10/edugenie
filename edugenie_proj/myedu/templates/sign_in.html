@@ -168,7 +168,7 @@
         }
     </style>
 </head>
-<body>
+{% comment %} <body>
     <div class="form-container">
         <form method="POST">
             {% csrf_token %}
@@ -203,7 +203,42 @@
 
 
     </div>
-</body>
+</body> {% endcomment %}
+<div class="form-container">
+    <form method="POST">
+        {% csrf_token %}
+        <h2 class="form-title">Welcome Back 👋</h2>
+        <p class="form-subtitle"><b>Please sign in to your account</b></p>
+
+        <div class="form-group">
+            {{ form.username }}
+            <label for="{{ form.username.id_for_label }}">Username</label>
+        </div>
+
+        <div class="form-group">
+            {{ form.password }}
+            <label for="{{ form.password.id_for_label }}">Password</label>
+        </div>
+
+        <div class="checkbox-group">
+            {{ form.stud }}
+            <label for="{{ form.stud.id_for_label }}">I am a school student</label>
+        </div>
+
+        {% if form.non_field_errors %}
+            <div style="color: red; font-size: 0.9rem; margin-bottom: 1rem;">
+                {% for error in form.non_field_errors %}
+                    <p><b>{{ error }}</b></p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <button type="submit" class="submit-btn">Log In</button><br>
+    </form>
+    <h4>Don't have an account? <a href="/sign_up/">Sign Up</a></h4>
+    <h4>Forgot Password? <a href="/reset_password/">Click here</a></h4>
+</div>
+
 <script>
     document.body.style.backgroundImage = "url('/static/logo.png')";
     document.body.style.backgroundSize = 'cover';

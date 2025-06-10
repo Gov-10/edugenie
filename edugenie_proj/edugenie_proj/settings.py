@@ -38,7 +38,7 @@ CORS_ALLOW_ALL_ORIGINS = True  # Change from True to False
 
 CORS_ALLOWED_ORIGINS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['https://d2cd-2409-40c2-404f-fc1e-8941-6bf1-f9b2-4079.ngrok-free.app', 'http://localhost:8089']
+CSRF_TRUSTED_ORIGINS = ['https://f358-2405-201-c404-e0ae-148-8649-7d32-6d8a.ngrok-free.app', 'http://localhost:8089']
 
 CORS_ALLOW_METHODS = [
     "GET",
@@ -170,4 +170,6 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'govindsys1008@gmail.com'
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+PASSWORD_RESET_TIMEOUT  = 14400
 
+AUTH_USER_MODEL = 'myedu.Student'
