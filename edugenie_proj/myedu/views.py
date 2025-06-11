@@ -219,29 +219,77 @@ def signup(request):
     return render(request, 'sign_up.html', {'form': form, 'RECAPTCHA_PUBLIC_KEY': settings.RECAPTCHA_PUBLIC_KEY})
 
 
+# def signin(request):
+#     if request.method == "POST":
+#         post_data = request.POST.copy()
+#         token = post_data.get('g-recaptcha-response')
+#         # Pass g-recaptcha-response to recaptcha_token explicitly
+#         if 'g-recaptcha-response' in request.POST:
+#             post_data['recaptcha_token'] = request.POST.get('g-recaptcha-response')
+#         form = SigninForm(request.POST)
+#         if not verify_recaptcha(token):
+#           form = SigninForm(post_data)
+#           form.add_error(None, "Invalid reCAPTCHA. Please try again.")
+#           return render(request, 'sign_in.html', {'form': form, 'RECAPTCHA_PUBLIC_KEY': settings.RECAPTCHA_PUBLIC_KEY})
+#         if form.is_valid():
+#             username = form.cleaned_data['username']
+#             password = form.cleaned_data['password']
+#             stud = form.cleaned_data.get('stud')
+#             user = authenticate(request, username=username, password=password)
+#             if user is not None:
+#                 if not user.is_verified:
+#                     form.add_error(None, "Please verify your email before signing in.")
+#                     return render(request, 'sign_in.html', {'form': form})
+#                 login(request, user)
+#                 if stud:
+#                     return render(request, 'stud.html', {'form': form, 'success': True, 'RECAPTCHA_PUBLIC_KEY': settings.RECAPTCHA_PUBLIC_KEY})
+#                 else:
+#                     return render(request, 'new.html', {'form': form, 'success': True, 'RECAPTCHA_PUBLIC_KEY': settings.RECAPTCHA_PUBLIC_KEY})
+#             else:
+#                 form.add_error(None, "Invalid username or password")
+#     else:
+#         form = SigninForm()
+#     return render(request, 'sign_in.html', {'form': form, 'RECAPTCHA_PUBLIC_KEY': settings.RECAPTCHA_PUBLIC_KEY})
+
 def signin(request):
     if request.method == "POST":
         form = SigninForm(request.POST)
+        print(">> Form Valid:", form.is_valid())
+        if not form.is_valid():
+         print(">> Form Errors:", form.errors)
         if form.is_valid():
+            token = request.POST.get('g-recaptcha-response')
+            print(">> reCAPTCHA Token:", token)
+            if not verify_recaptcha(token):
+                print(">> reCAPTCHA failed")
+                form.add_error(None, "Invalid reCAPTCHA. Please try again.")
+                return render(request, 'sign_in.html', {'form': form, 'RECAPTCHA_PUBLIC_KEY': settings.RECAPTCHA_PUBLIC_KEY})
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             stud = form.cleaned_data.get('stud')
+            print(">> Username:", username)
+            print(">> Password:", password)
             user = authenticate(request, username=username, password=password)
+            print(">> Authenticated User:", user)
             if user is not None:
+                print(">> User is_verified:", user.is_verified)
                 if not user.is_verified:
+                    print(">> User email not verified")
                     form.add_error(None, "Please verify your email before signing in.")
                     return render(request, 'sign_in.html', {'form': form})
                 login(request, user)
+                print(">> Login successful")
                 if stud:
                     return render(request, 'stud.html', {'form': form, 'success': True})
                 else:
                     return render(request, 'new.html', {'form': form, 'success': True})
             else:
+                print(">> Invalid username or password")
                 form.add_error(None, "Invalid username or password")
+        # If form is invalid, fall through to re-render with errors
     else:
         form = SigninForm()
-    return render(request, 'sign_in.html', {'form': form})
-
+    return render(request, 'sign_in.html', {'form': form, 'RECAPTCHA_PUBLIC_KEY': settings.RECAPTCHA_PUBLIC_KEY})
 @login_required
 def logoutUser(request):
     logout(request)
