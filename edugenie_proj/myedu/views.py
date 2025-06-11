@@ -290,6 +290,7 @@ def signin(request):
     else:
         form = SigninForm()
     return render(request, 'sign_in.html', {'form': form, 'RECAPTCHA_PUBLIC_KEY': settings.RECAPTCHA_PUBLIC_KEY})
+
 @login_required
 def logoutUser(request):
     logout(request)
