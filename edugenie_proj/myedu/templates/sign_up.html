@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
-    {% comment %} <script src="https://www.google.com/recaptcha/api.js" async defer></script> {% endcomment %}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         @keyframes fadeInUp {
             0% { opacity: 0; transform: translateY(20px); }
@@ -231,10 +231,9 @@
         <label for="{{ form.school_student.id_for_label }}">I am a school student</label>
       </div>
 
-{% comment %} 
       <div class="form-group">
-                <div class="g-recaptcha" data-sitekey="{{ RECAPTCHA_PUBLIC_KEY }}"></div>
-            </div> {% endcomment %}
+        <div class="g-recaptcha" data-sitekey="{{ RECAPTCHA_PUBLIC_KEY }}"></div>
+                </div>
       <!-- Non-field errors -->
       {% if form.non_field_errors %}
         <div class="form-error">
@@ -243,7 +242,14 @@
           {% endfor %}
         </div>
       {% endif %}
-      
+      <input type="hidden" name="recaptcha_token" id="recaptcha_token">
+      <script>
+  function onSubmit(token) {
+      document.getElementById('recaptcha_token').value = token;
+      document.forms[0].submit();
+  }
+</script>
+
       <button type="submit" class="submit-btn">Register</button>
     </form>
     <h4>Already have an account? <a href="{% url 'sign_in' %}">Sign In</a></h4>

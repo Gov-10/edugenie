@@ -70,8 +70,16 @@ import requests
 
 
 class RecaptchaWidget(forms.Widget):
-    def render(self, name, value, attrs=None, renderer=None):
-        return f'<div class="g-recaptcha" data-sitekey="{settings.RECAPTCHA_PUBLIC_KEY}"></div>'
+   def render(self, name, value, attrs=None, renderer=None):
+        return f'''
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <button class="submit-btn g-recaptcha"
+                data-sitekey="{settings.RECAPTCHA_PUBLIC_KEY}"
+                data-callback="onSubmit"
+                data-action="submit">
+            Register
+        </button>
+        '''
 
 class RecaptchaField(forms.CharField):
     widget = RecaptchaWidget
@@ -104,6 +112,7 @@ class RecaptchaField(forms.CharField):
 class SignupForm(UserCreationForm):
     email = forms.EmailField(required=True)
     school_student = forms.BooleanField(required=False,label="Are you a school student?" )
+    recaptcha_token = RecaptchaField(required=True)
     class Meta:
         model  = Student
         fields = ('username', 'email', 'password1', 'password2', 'school_student')

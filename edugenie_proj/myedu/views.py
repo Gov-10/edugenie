@@ -147,7 +147,7 @@
 #         return redirect('sign_in')
     
 
-
+from django.conf import settings
 from django.shortcuts import render, redirect
 from .tokens import account_activation_token
 from .forms import SignupForm, SigninForm,PasswordResetForm, SetNewPassword
@@ -171,25 +171,52 @@ def home(request):
 def about_us(request):
     return render(request, 'about_us.html')
 
+# def signup(request):
+#     if request.method == "POST":
+#         form = SignupForm(request.POST)
+#         if form.is_valid():
+#             student = form.save(commit=False) #commit = False prevents data from getting stored in the DB
+#             student.is_active = False
+#             student.save()  
+#             if ActivateEmail(request, student, form.cleaned_data.get('email')):
+#                 messages.success(request, f'Email activation link has been sent to <b>{student.email}</b>')
+#                 return render(request, 'email_verification_sent.html') 
+#             else:
+#                 messages.error(request, "Failed to send email, kindly check if you typed it correct")
+#         else:
+#             for error in list(form.errors.values()):
+#                 messages.error(request, error)
+#     else:
+#         form = SignupForm()  # <-- You need this line to render form on GET
+
+#     return render(request, 'sign_up.html', {'form': form})
 def signup(request):
     if request.method == "POST":
-        form = SignupForm(request.POST)
+        post_data = request.POST.copy()
+
+        # Pass g-recaptcha-response to recaptcha_token explicitly
+        if 'g-recaptcha-response' in request.POST:
+            post_data['recaptcha_token'] = request.POST.get('g-recaptcha-response')
+
+        form = SignupForm(post_data)
+
         if form.is_valid():
-            student = form.save(commit=False) #commit = False prevents data from getting stored in the DB
+            student = form.save(commit=False)
             student.is_active = False
-            student.save()  
+            student.save()
+
             if ActivateEmail(request, student, form.cleaned_data.get('email')):
                 messages.success(request, f'Email activation link has been sent to <b>{student.email}</b>')
-                return render(request, 'email_verification_sent.html') 
+                return render(request, 'email_verification_sent.html')
             else:
                 messages.error(request, "Failed to send email, kindly check if you typed it correct")
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
     else:
-        form = SignupForm()  # <-- You need this line to render form on GET
+        form = SignupForm()
 
-    return render(request, 'sign_up.html', {'form': form})
+    return render(request, 'sign_up.html', {'form': form, 'RECAPTCHA_PUBLIC_KEY': settings.RECAPTCHA_PUBLIC_KEY})
 
 
 def signin(request):
@@ -251,25 +278,27 @@ def ActivateEmail(request,user, to_email):
 
 def testimonials(request):
     return render(request, 'testimonials.html')
-# def verify_recaptcha(token):
-#     """Helper function to verify reCAPTCHA"""
-#     import requests
-#     from django.conf import settings
+
+
+def verify_recaptcha(token):
+    """Helper function to verify reCAPTCHA"""
+    import requests
+    from django.conf import settings
     
-#     data = {
-#         'secret': settings.RECAPTCHA_PRIVATE_KEY,
-#         'response': token
-#     }
+    data = {
+        'secret': settings.RECAPTCHA_PRIVATE_KEY,
+        'response': token
+    }
     
-#     try:
-#         response = requests.post(
-#             'https://www.google.com/recaptcha/api/siteverify',
-#             data=data,
-#             timeout=10
-#         )
-#         result = response.json()
-#         return result.get('success', False)
-#     except:
-#         return False
+    try:
+        response = requests.post(
+            'https://www.google.com/recaptcha/api/siteverify',
+            data=data,
+            timeout=10
+        )
+        result = response.json()
+        return result.get('success', False)
+    except:
+        return False
 
 
