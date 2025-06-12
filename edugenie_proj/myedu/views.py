@@ -383,3 +383,6 @@ def stud(request):
 
 def intern(request):
     return render(request, 'new.html')
+
+def contact(request):
+    return render(request, 'contact_us.html')
