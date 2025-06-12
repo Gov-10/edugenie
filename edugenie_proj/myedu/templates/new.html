@@ -892,10 +892,11 @@ btn.addEventListener("click", () => {
     <div class="logo">
       <img src='{%static 'logo.png'%}'/>
     </div>
-    <a href="/" class="element">🏠 Home</a>
+    <a href="/intern/" class="element">🏠 Home</a>
     <a href="/about_us/" class="element">👥 About Us</a>
     <a href="/testimonials/" class="element">💬 Testimonials</a>
     <a href="/careers/" class="element">💼 Careers</a>
+     <a href="/logout/" class= "element" onClick= clicky()>Logout 🔓 </a>
     <div class="pos">
       <button id="themeToggle" class="toggle">
         <div class="rocket-wrapper">
@@ -1020,6 +1021,10 @@ btn.addEventListener("click", () => {
     const logo = document.querySelector(".logo");
     const rocket = document.getElementById("rocket");
 
+    function clicky()
+    {
+      window.alert("You’ve been logged out successfully.");
+    }
     function openChat()
     {
       window.location = "/chat/";

@@ -489,11 +489,12 @@
     <div class="logo">
       <img src='{%static 'logo.png'%}'/>
     </div>
-    <a href="/" class="element">🏠 Home</a>
+    <a href="/stud/" class="element">🏠 Home</a>
     <a href="/testimonials/" class="element">💬 Testimonials</a>
     <a href="/about_us/" class="element">👥 About Us</a>
     <a href="" class="element">📞 Contact Us</a>
     <a href="" class="element">💭 Feedback</a>
+    <a href="/logout/" class= "element" onClick= clicky()>Logout 🔓 </a>
 
     <div class="pos">
       <button id="themeToggle" class="toggle">
@@ -561,7 +562,11 @@
     const btn = document.getElementById("themeToggle");
     const logo = document.querySelector(".logo");
     const rocket = document.getElementById("rocket");
-
+    
+    function clicky()
+    {
+      window.alert("You’ve been logged out successfully.");
+    }
     function triggerFloatIn() {
       logo.classList.remove("float-in");
       void logo.offsetWidth;

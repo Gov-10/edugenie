@@ -321,8 +321,8 @@ def signin(request):
 
 @login_required
 def logoutUser(request):
-    logout(request)
     messages.success(request, "You’ve been logged out successfully.")
+    logout(request)
     return redirect('home')
 
 def activate(request, uidb64, token):
@@ -378,4 +378,8 @@ def verify_recaptcha(token):
     except:
         return False
 
+def stud(request):
+    return render(request, 'stud.html')
 
+def intern(request):
+    return render(request, 'new.html')
