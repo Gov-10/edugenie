@@ -553,7 +553,7 @@
 
   <!-- Chatbot Icon -->
   <div class="chatbot-icon">
-    <div class="robot">🤖</div>
+    <div class="robot" onClick= openChat()>🤖</div>
     <p style="color: white; font-weight: 600; margin-top: 10px; font-family: 'Poppins', sans-serif;">Need Help?</p>
   </div>
 
@@ -567,7 +567,11 @@
       void logo.offsetWidth;
       logo.classList.add("float-in");
     }
-
+    
+    function openChat()
+    {
+      window.location = "/chat/";
+    }
     btn.addEventListener("click", () => {
       document.body.classList.toggle("dark");
       document.body.classList.toggle("light");

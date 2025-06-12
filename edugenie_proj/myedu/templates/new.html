@@ -1011,7 +1011,7 @@ btn.addEventListener("click", () => {
 
   <!-- Chatbot Icon -->
   <div class="chatbot-icon">
-    <div class="robot">🤖</div>
+    <div class="robot" onClick= openChat()>🤖</div>
     <p class="chatbot-text">Career Assistant</p>
   </div>
 
@@ -1020,6 +1020,10 @@ btn.addEventListener("click", () => {
     const logo = document.querySelector(".logo");
     const rocket = document.getElementById("rocket");
 
+    function openChat()
+    {
+      window.location = "/chat/";
+    }
     function triggerFloatIn() {
       logo.classList.remove("float-in");
       void logo.offsetWidth;
