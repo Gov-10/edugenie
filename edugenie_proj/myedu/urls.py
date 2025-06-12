@@ -9,6 +9,8 @@ urlpatterns = [
     path('sign_in/', views.signin, name = "sign_in" ),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     path('testimonials/', views.testimonials, name='testimonials'),
+    path('chat/', views.chat_page, name='chat'),
+    path('get-response/', views.chat_response, name='get_response'),
 
     path('password_reset/', auth_views.PasswordResetView.as_view(template_name= 'password_reset.html'), name='password_reset'),
     path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(template_name = 'pass_set.html'), name='password_reset_done'),

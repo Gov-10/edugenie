@@ -750,7 +750,7 @@
 
   <!-- Chatbot Icon -->
   <div class="chatbot-icon">
-    <div class="robot">🤖</div>
+    <div class="robot" onClick=OpenChat()>🤖</div>
     <p class="chatbot-text">Need Help?</p>
   </div>
 
@@ -760,6 +760,10 @@
     const rocket = document.getElementById("rocket");
     const modes = document.getElementById("modes");
 
+    function OpenChat()
+    {
+       window.location = "/chat/";
+    }
     function updateModeUI() {
       const isDark = document.body.classList.contains("dark");
     // modes.textContent = isDark ? "🌙 Dark Mode" : "☀️ Light Mode"; 

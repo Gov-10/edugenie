@@ -164,12 +164,40 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
+from django.http import JsonResponse
+from django.shortcuts import render
+import os
+from dotenv import load_dotenv
+import google.generativeai as genai
+
+
+load_dotenv()
+gemini_api_key = os.getenv("GEMINI_API_KEY")
+
+
+genai.configure(api_key=gemini_api_key)
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 def home(request):
     return render(request, 'home.html')
 
 def about_us(request):
     return render(request, 'about_us.html')
+
+def chat_page(request):
+    return render(request, 'chat.html')
+
+def chat_response(request):
+    if request.method == "POST":
+        message = request.POST.get("message")
+        try:
+            response = model.generate_content(message)
+            reply = response.text.strip()
+            return JsonResponse({"response": reply})
+        except Exception as e:
+             print("Gemini Error:", str(e))
+             return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 # def signup(request):
 #     if request.method == "POST":
