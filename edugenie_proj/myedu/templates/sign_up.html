@@ -170,7 +170,7 @@
 <body>
   <div class="form-container">
     <h2>Sign Up</h2>
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
 
       <!-- Username Field -->
@@ -219,6 +219,18 @@
         {% if form.password2.errors %}
           <div class="form-error">
             {% for error in form.password2.errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+       <div class="form-group">
+        {{ form.avatar }}
+        <label for="{{ form.avatar.id_for_label }}">Create Avatar</label>
+        {% if form.avatar.errors %}
+          <div class="form-error">
+            {% for error in form.avatar.errors %}
               <p>{{ error }}</p>
             {% endfor %}
           </div>
