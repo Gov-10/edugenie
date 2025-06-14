@@ -331,8 +331,11 @@ def pdf_summarizer(request):
             text = extract_text(pdf)
             prompt = (
                 "/human\n\n"
-                "ELI10: Can you summarize this PDF in simple points?\n\n"
-                f"{text}"
+                " Can you summarize this PDF in simple points?\n\n"
+                "Also, please generate readable notes for revision\n\n"
+                "Also, imagine yourself as an expert in the related field\n\n"
+                "Instructions for output:beautifully styled HTML article with headings, bullet points (<ul><li>), bold text (<b>), and sections and colors.Make sure the result is clean, readable, and looks great when rendered on a web page.\n\n" 
+                 f"{text}"
             )
             try:
                 response = model.generate_content(prompt)
