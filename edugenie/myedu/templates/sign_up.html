@@ -225,17 +225,6 @@
         {% endif %}
       </div>
 
-       <div class="form-group">
-        {{ form.avatar }}
-        <label for="{{ form.avatar.id_for_label }}">Create Avatar</label>
-        {% if form.avatar.errors %}
-          <div class="form-error">
-            {% for error in form.avatar.errors %}
-              <p>{{ error }}</p>
-            {% endfor %}
-          </div>
-        {% endif %}
-      </div>
 
       <!-- School Student Checkbox -->
       <div class="checkbox-group">

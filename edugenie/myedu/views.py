@@ -222,13 +222,12 @@ def chat_response(request):
 def signup(request):
     if request.method == "POST":
         post_data = request.POST.copy()
-        files_data = request.FILES
 
         # Pass g-recaptcha-response to recaptcha_token explicitly
         if 'g-recaptcha-response' in request.POST:
             post_data['recaptcha_token'] = request.POST.get('g-recaptcha-response')
 
-        form = SignupForm(post_data, files_data)
+        form = SignupForm(post_data)
 
         if form.is_valid():
             student = form.save(commit=False)

@@ -22,6 +22,5 @@ class Student(AbstractUser):
     school_student = models.BooleanField(default = False)
     email_token = models.UUIDField(default=uuid.uuid4)
     is_verified = models.BooleanField(default = False)
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     def __str__(self):
         return self.username

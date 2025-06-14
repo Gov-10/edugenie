@@ -115,7 +115,7 @@ class SignupForm(UserCreationForm):
     recaptcha_token = RecaptchaField(required=True)
     class Meta:
         model  = Student
-        fields = ('username', 'email', 'password1', 'password2', 'school_student', 'avatar')
+        fields = ('username', 'email', 'password1', 'password2', 'school_student')
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email_token = uuid.uuid4()
