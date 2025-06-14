@@ -308,9 +308,9 @@ def signin(request):
                 login(request, user)
                 print(">> Login successful")
                 if stud:
-                    return render(request, 'stud.html', {'form': form, 'success': True})
+                    return redirect('stud')
                 else:
-                    return render(request, 'new.html', {'form': form, 'success': True})
+                    return redirect('intern')
             else:
                 print(">> Invalid username or password")
                 form.add_error(None, "Invalid username or password")
