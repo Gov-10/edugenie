@@ -148,3 +148,6 @@ class SetNewPassword(forms.Form):
         student.password = make_password(self.cleaned_data["new_password"])
         student.save()
         return student
+    
+class PdfSummarizerForm(forms.Form):
+    pdf = forms.FileField(required=True, label="Please upload your PDF")

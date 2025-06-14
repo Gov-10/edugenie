@@ -150,7 +150,7 @@
 from django.conf import settings
 from django.shortcuts import render, redirect
 from .tokens import account_activation_token
-from .forms import SignupForm, SigninForm,PasswordResetForm, SetNewPassword
+from .forms import SignupForm, SigninForm,PasswordResetForm, SetNewPassword, PdfSummarizerForm
 from .models import Student
 from django.contrib.auth.hashers import check_password, make_password
 from django.urls import reverse
@@ -169,6 +169,7 @@ from django.shortcuts import render
 import os
 from dotenv import load_dotenv
 import google.generativeai as genai
+import fitz
 
 
 load_dotenv()
@@ -319,6 +320,34 @@ def signin(request):
         form = SigninForm()
     return render(request, 'sign_in.html', {'form': form, 'RECAPTCHA_PUBLIC_KEY': settings.RECAPTCHA_PUBLIC_KEY})
 
+@csrf_exempt
+@login_required
+def pdf_summarizer(request):
+    summary = None
+    if request.method == "POST":
+        form = PdfSummarizerForm(request.POST, request.FILES)
+        if form.is_valid():
+            pdf = request.FILES['pdf']
+            text = extract_text(pdf)
+            prompt = (
+                "/human\n\n"
+                "ELI10: Can you summarize this PDF in simple points?\n\n"
+                f"{text}"
+            )
+            try:
+                response = model.generate_content(prompt)
+                summary = response.text.strip()
+            except Exception as e:
+                summary = f"❌ Error: {str(e)}"
+    else:
+        form = PdfSummarizerForm()
+
+    return render(request, 'pdf_summarizer.html', {
+        'form': form,
+        'summary': summary
+    })
+
+
 @login_required
 def logoutUser(request):
     messages.success(request, "You’ve been logged out successfully.")
@@ -386,3 +415,15 @@ def intern(request):
 
 def contact(request):
     return render(request, 'contact_us.html')
+
+
+def extract_text(pdf):
+    pdf_document = fitz.open(stream=pdf.read(), filetype="pdf")
+    pages = []
+
+    for i, page in enumerate(pdf_document):
+        page_text = page.get_text()
+        pages.append(f"--- Page {i + 1} ---\n{page_text}")
+    
+    pdf_document.close()
+    return "\n\n".join(pages)
