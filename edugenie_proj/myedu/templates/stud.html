@@ -1,0 +1,643 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduGenie - Your Learning Magic Starts Here! ✨</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Poppins:wght@300;400;600;700&display=swap');
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body.light {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transition: background 0.4s;
+      color: #333;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body.dark {
+      background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+      transition: background 0.4s;
+      color: #00ffff;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .toggle {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      border-radius: 50%;
+      overflow: hidden;
+      transition: background 0.4s, transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+
+    .toggle:hover {
+      transform: scale(1.25) rotate(10deg);
+      background: linear-gradient(45deg, #4ecdc4, #ff6b6b);
+    }
+
+    .rocket-wrapper {
+      position: relative;
+      width: 50px;
+      height: 50px;
+    }
+
+    .rocket-outline {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #ff6b6b;
+      border-radius: 50%;
+      filter: blur(8px);
+      opacity: 0.7;
+      z-index: 0;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+
+    .rocket {
+      position: absolute;
+      font-size: 32px;
+      z-index: 1;
+      transition: transform 1s ease;
+    }
+
+    .dark .rocket {
+      transform: translateY(-120px);
+    }
+
+    .dark .rocket-outline {
+      background: #00ffff;
+    }
+
+    .dark .content,
+    .dark #modes {
+      color: #00ffff;
+    }
+
+    #modes {
+      max-width: 70px;
+      margin: 0;
+      font-size: 14px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .pos {
+      margin-right: 100px;
+    }
+    
+    .navbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      border-radius: 0 0 25px 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    .dark .navbar {
+      background: rgba(0, 255, 255, 0.1);
+      border-bottom: 3px solid #00ffff;
+      box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);
+    }
+
+    .logo {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 4px solid rgba(255, 255, 255, 0.5);
+      transition: all 0.3s ease;
+    }
+    
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+      
+    @keyframes neon-glow {
+      0% { 
+        box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 60px #00ffff;
+        border-color: #00ffff;
+      }
+      100% { 
+        box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 40px #00ffff;
+        border-color: rgba(0, 255, 255, 0.5);
+      }
+    }
+
+    .dark .logo {
+      border-color: #00ffff;
+      animation: neon-glow 2s infinite alternate;
+    }
+
+    @keyframes floatIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .logo.float-in {
+      animation: floatIn 1.2s ease;
+    }
+    
+    .element {
+      font-size: 18px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      margin: 0 15px;
+      text-decoration: none;
+      transition: 0.3s ease;
+      position: relative;
+      padding: 10px 15px;
+      border-radius: 20px;
+      color: white;
+    }
+
+    .element:hover {
+      transform: scale(1.1) translateY(-2px);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .dark .element {
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+    }
+
+    .dark .element:hover {
+      background: rgba(0, 255, 255, 0.2);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+
+    .element::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 3px;
+      left: 50%;
+      bottom: 5px;
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      transition: width 0.3s ease, left 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .element:hover::after {
+      width: 80%;
+      left: 10%;
+    }
+
+    .dark .element::after {
+      background: linear-gradient(45deg, #00ffff, #ff00ff);
+    }
+
+    .dark .element.float-in{
+      animation: floatIn 1.0s ease;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 100px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      margin: 40px;
+      border-radius: 30px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+
+    .dark .hero {
+      background: rgba(0, 255, 255, 0.05);
+      box-shadow: 0 15px 35px rgba(0, 255, 255, 0.1);
+    }
+
+    .hero h1 {
+      font-size: 4rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient-shift 3s ease-in-out infinite;
+    }
+
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .dark .hero h1 {
+      background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .dark .hero p {
+      color: #00ffff;
+    }
+
+    /* Features Section */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      padding: 60px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .dark .feature-card {
+      background: rgba(0, 255, 255, 0.1);
+      border: 2px solid rgba(0, 255, 255, 0.3);
+    }
+
+    .dark .feature-card:hover {
+      box-shadow: 0 20px 40px rgba(0, 255, 255, 0.2);
+      border-color: #00ffff;
+    }
+
+    .feature-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: white;
+    }
+
+    .dark .feature-card h3 {
+      color: #00ffff;
+    }
+
+    .feature-card p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .dark .feature-card p {
+      color: rgba(0, 255, 255, 0.8);
+    }
+
+    /* CTA Button */
+    .cta-button {
+      display: inline-block;
+      padding: 15px 40px;
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      margin-top: 20px;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      background: linear-gradient(45deg, #4ecdc4, #ff6b6b);
+    }
+
+    .dark .cta-button {
+      background: linear-gradient(45deg, #00ffff, #ff00ff);
+      box-shadow: 0 10px 25px rgba(0, 255, 255, 0.3);
+    }
+
+    .dark .cta-button:hover {
+      background: linear-gradient(45deg, #ff00ff, #00ffff);
+      box-shadow: 0 15px 35px rgba(0, 255, 255, 0.4);
+    }
+
+    /* Chatbot */
+    .chatbot-icon {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      cursor: pointer;
+      z-index: 1000;
+      text-align: center;
+    }
+
+    .robot {
+      width: 120px;
+      transition: transform 0.3s ease;
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 10px #4ecdc4) drop-shadow(0 0 20px #4ecdc4);
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0) rotate(-5deg);
+      }
+      50% {
+        transform: translateY(-15px) rotate(5deg);
+      }
+    }
+
+    .chatbot-icon:hover .robot {
+      transform: scale(1.3) rotate(10deg);
+      filter: drop-shadow(0 0 15px #ff6b6b) drop-shadow(0 0 30px #ff6b6b);
+    }
+
+    .dark .robot {
+      filter: drop-shadow(0 0 15px #00ffff) drop-shadow(0 0 30px #00ffff);
+    }
+
+    .dark .chatbot-icon:hover .robot {
+      filter: drop-shadow(0 0 20px #ff00ff) drop-shadow(0 0 40px #ff00ff);
+    }
+
+    /* Fun Elements */
+    .floating-elements {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .floating-element {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.6;
+      animation: float-around 15s infinite linear;
+    }
+
+    @keyframes float-around {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .features {
+        grid-template-columns: 1fr;
+        padding: 40px 20px;
+      }
+      
+      .logo {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .toggle {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .pos {
+        margin-right: 0;
+      }
+    }
+   .pdf_summ{
+     cursor:pointer;
+     background-color: lightgreen;
+     border-radius: 5px;
+     border: none;
+     align-items: center;
+     padding: 5px;
+   }
+   .pdf_summ:hover{
+    background-color:yellow;
+   }
+    </style>
+</head>
+<body class="light">
+  <!-- Floating Background Elements -->
+  <div class="floating-elements">
+    <div class="floating-element" style="left: 10%; animation-delay: 0s;">🌟</div>
+    <div class="floating-element" style="left: 20%; animation-delay: 2s;">📚</div>
+    <div class="floating-element" style="left: 30%; animation-delay: 4s;">🎯</div>
+    <div class="floating-element" style="left: 40%; animation-delay: 6s;">💡</div>
+    <div class="floating-element" style="left: 50%; animation-delay: 8s;">🚀</div>
+    <div class="floating-element" style="left: 60%; animation-delay: 10s;">⭐</div>
+    <div class="floating-element" style="left: 70%; animation-delay: 12s;">🎨</div>
+    <div class="floating-element" style="left: 80%; animation-delay: 14s;">🏆</div>
+  </div>
+
+  <nav class="navbar">
+    <p id="modes"></p>
+    <div class="logo">
+      <img src='{%static 'logo.png'%}'/>
+    </div>
+    <a href="/testimonials/" class="element">💬 Testimonials</a>
+    <a href="/about_us/" class="element">👥 About Us</a>
+    <a href="/contact_us/" class="element">📞 Contact Us</a>
+    <a href="" class="element">💭 Feedback</a>
+    <a href="/logout/" class= "element" onClick= clicky()>Logout 🔓 </a>
+
+    <div class="pos">
+      <button id="themeToggle" class="toggle">
+        <div class="rocket-wrapper">
+          <div class="rocket-outline"></div>
+          <div class="rocket" id="rocket">🚀</div>
+        </div>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Welcome to EduGenie! ✨</h1>
+    <p>Where Learning Becomes an Adventure! Unlock your potential with AI-powered education that makes studying fun, engaging, and super effective! 🎓</p>
+    <a href="#features" class="cta-button">Start Your Learning Journey! 🌟</a>
+  </section>
+
+  <!-- Features Section -->
+  
+  <section id="features" class="features">
+    <div class="feature-card">
+      <span class="feature-icon">📚</span>
+      <h3>PDF Summarizer/Notes maker</h3>
+      <p>Our AI adapts to your learning style, summarizing boring pdfs and making notes for you</p>
+      <button onClick=pdfSummarizer() class="pdf_summ">TRY IT OUT NOW!!</button>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">🎮</span>
+      <h3>Gamified Experience</h3>
+      <p>Turn studying into a game! Earn points, unlock achievements, and compete with friends while mastering your subjects. Learning has never been this fun!</p>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">📊</span>
+      <h3>Progress Tracking</h3>
+      <p>Watch your knowledge grow with detailed analytics and progress reports. See your strengths, identify areas for improvement, and celebrate your wins!</p>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">👥</span>
+      <h3>Study Groups</h3>
+      <p>Connect with classmates, form study groups, and learn together! Collaborate on projects, share notes, and support each other's academic journey.</p>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">📱</span>
+      <h3>Mobile Learning</h3>
+      <p>Study anywhere, anytime! Our mobile-optimized platform lets you learn on the go, whether you're on the bus, at lunch, or chilling at home.</p>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">🏆</span>
+      <h3>Achievement System</h3>
+      <p>Collect badges, climb leaderboards, and show off your academic achievements! Every milestone deserves recognition and celebration.</p>
+    </div>
+  </section>
+
+  <!-- Chatbot Icon -->
+  <div class="chatbot-icon">
+    <div class="robot" onClick= openChat()>🤖</div>
+    <p style="color: white; font-weight: 600; margin-top: 10px; font-family: 'Poppins', sans-serif;">Need Help?</p>
+  </div>
+
+  <script>
+    const btn = document.getElementById("themeToggle");
+    const logo = document.querySelector(".logo");
+    const rocket = document.getElementById("rocket");
+    
+    function clicky()
+    {
+      window.alert("You’ve been logged out successfully.");
+    }
+    function triggerFloatIn() {
+      logo.classList.remove("float-in");
+      void logo.offsetWidth;
+      logo.classList.add("float-in");
+    }
+     function pdfSummarizer()
+     {
+        window.location = "/pdf_summarizer/";
+     }
+    function openChat()
+    {
+      window.location = "/chat/";
+    }
+    btn.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      document.body.classList.toggle("light");
+
+      document.getElementById("modes").textContent =
+        document.body.classList.contains("dark") ? "🌙 Dark Mode" : "☀️ Light Mode";
+
+      rocket.textContent = document.body.classList.contains("dark") ? "🌙" : "🚀";
+
+      const isDarkMode = document.body.classList.contains("dark");
+      const splineDark = document.getElementById("spline-dark");
+      const splineLight = document.getElementById("spline-light");
+      
+      if (splineDark && splineLight) {
+        splineDark.style.display = isDarkMode ? "block" : "none";
+        splineLight.style.display = isDarkMode ? "none" : "block";
+      }
+
+      triggerFloatIn();
+    });
+
+    // Initialize mode text
+    document.getElementById("modes").textContent = "☀️ Light Mode";
+
+    // Add smooth scrolling for CTA button
+    document.querySelector('.cta-button').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('features').scrollIntoView({
+        behavior: 'smooth'
+      });
+    });
+
+    // Add click effect to feature cards
+    document.querySelectorAll('.feature-card').forEach(card => {
+      card.addEventListener('click', function() {
+        this.style.transform = 'scale(0.98)';
+        setTimeout(() => {
+          this.style.transform = '';
+        }, 150);
+      });
+    });
+
+    // Chatbot interaction
+    document.querySelector('.chatbot-icon').addEventListener('click', function() {
+      alert('Hi there! 👋 I\'m your study buddy! How can I help you learn better today? 🤓');
+    });
+
+  </script>
+</body>
+</html>

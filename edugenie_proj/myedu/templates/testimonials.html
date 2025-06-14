@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Testimonials</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: white;
+      font-family: Inter, sans-serif;
+    }
+
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .title {
+      font-size: 3rem;
+      margin-bottom: 40px;
+      font-weight: 400;
+    }
+
+    .testimonials-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: center;
+    }
+
+    .testimonial-card {
+      flex: 1 1 calc(33.333% - 40px);
+      max-width: 350px;
+      background: white;
+      box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+      border-radius: 10px;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .circle-image {
+      width: 120px;
+      height: 120px;
+      background: #D9D9D9;
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
+
+    .testimonial-text {
+      font-size: 1rem;
+      margin-bottom: 20px;
+      color: #000;
+    }
+
+    .author {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #000;
+    }
+
+    @media (max-width: 992px) {
+      .testimonial-card {
+        flex: 1 1 calc(50% - 40px);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .testimonial-card {
+        flex: 1 1 100%;
+      }
+
+      .title {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="main-container">
+  <div class="title">Testimonials</div>
+  <div class="testimonials-grid">
+    
+    <div class="testimonial-card">
+      <div class="circle-image"></div>
+      <div class="testimonial-text">
+        "I used to struggle with math until I found this platform. The AI understood exactly where I needed help and guided me at my pace. Learning finally feels like it's made for me!"
+      </div>
+      <div class="author">~ Riya S., Class 10 Student</div>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="circle-image"></div>
+      <div class="testimonial-text">
+        "This site has completely changed how my son studies. The personalized approach keeps him engaged, and I can track his progress in real-time. It's like having a tutor available 24/7."
+      </div>
+      <div class="author">~ Amit K., Parent</div>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="circle-image"></div>
+      <div class="testimonial-text">
+        "The AI-driven insights help me focus on students who really need attention. It’s not just smart tech — it’s a powerful tool that supports teachers and improves classroom outcomes."
+      </div>
+      <div class="author">~ Neha M., Teacher (CBSE Curriculum)</div>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="circle-image"></div>
+      <div class="testimonial-text">
+        "As someone returning to studies after years, this platform has been a game changer. The personalized roadmaps and AI mentors make even the toughest topics manageable and fun."
+      </div>
+      <div class="author">~ Anjali D., Career Switcher</div>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="circle-image"></div>
+      <div class="testimonial-text">
+        "I love how the platform adapts to my learning style. Whether it’s coding or circuits, it gives real-time feedback and resources that match my level. It's truly next-gen education!"
+      </div>
+      <div class="author">~ Vikram R., Student</div>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="circle-image"></div>
+      <div class="testimonial-text">
+        "This isn’t just another e-learning site — it’s the future of education. The AI doesn’t just deliver content; it understands learners. It’s transforming how we teach and how we learn."
+      </div>
+      <div class="author">~ Dr. Sameer P., Academic Consultant</div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
