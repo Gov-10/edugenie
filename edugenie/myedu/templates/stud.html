@@ -534,8 +534,9 @@
 
     <div class="feature-card">
       <span class="feature-icon">🎮</span>
-      <h3>Gamified Experience</h3>
+      <h3>Real time practice</h3>
       <p>Turn studying into a game! Earn points, unlock achievements, and compete with friends while mastering your subjects. Learning has never been this fun!</p>
+      <button onClick=openQuiz() class= "pdf_summ">TRY IT OUT NOW!!</button>
     </div>
 
     <div class="feature-card">
@@ -582,6 +583,10 @@
       logo.classList.remove("float-in");
       void logo.offsetWidth;
       logo.classList.add("float-in");
+    }
+    function openQuiz()
+    {
+      window.location = "/quiz";
     }
      function pdfSummarizer()
      {

@@ -330,12 +330,40 @@ def pdf_summarizer(request):
             pdf = request.FILES['pdf']
             text = extract_text(pdf)
             prompt = (
-                "/human\n\n"
-                " Can you summarize this PDF in simple points?\n\n"
-                "Also, please generate readable notes for revision\n\n"
-                "Also, imagine yourself as an expert in the related field\n\n"
-                "Instructions for output:beautifully styled HTML article with headings, bullet points (<ul><li>), bold text (<b>), and sections and colors.Make sure the result is clean, readable, and looks great when rendered on a web page.\n\n" 
-                 f"{text}"
+               "/human\n\n"
+    "Can you summarize this PDF in simple, understandable points?\n\n"
+    "Imagine you're a top-level teacher explaining this topic to students preparing for a final exam.\n\n"
+    "🎯 Goals:\n"
+    "- Help students understand the content as if you’re personally tutoring them.\n"
+    "- Explain important concepts with clarity.\n"
+    "- Don’t skip over crucial implementation steps or subtle details.\n\n"
+    "📘 Style Requirements:\n"
+    "- Your tone should be warm, engaging, and explanatory, like a teacher in class.\n"
+    "- Use analogies and real-world comparisons where appropriate.\n"
+    "- Begin with a warm introduction, e.g., “👩‍🏫 Welcome to class!” and end with a motivating closing line.\n\n"
+    "💡 Output Format Instructions (HTML only):\n"
+    "- Wrap content using <div> and <section> for structure.\n"
+    "- Use semantic HTML:\n"
+    "  - <h2> and <h3> for headings\n"
+    "  - <ul><li> for bullet points\n"
+    "  - <b> for key phrases\n"
+    "  - <hr> to break major sections\n"
+    "- Wrap sections in styled blocks like:\n"
+    "<div style=\"background-color:#f9f9f9;padding:12px;border-left:4px solid #4CAF50;border-radius:8px;margin-bottom:12px;\">\n"
+    "  <!-- Insert content here -->\n"
+    "</div>\n\n"
+    "📌 Extra Features:\n"
+    "- Insert a <b>🧠 Mind Map</b> as a structured HTML list near the end with yellow background like:\n"
+    "<div style=\"background-color:#fff8dc;padding:10px;border-left:6px solid #ffa500;border-radius:6px;\">\n"
+    "  <h3>🧠 Mind Map: [Topic Name]</h3>\n"
+    "  <ul>\n"
+    "    <li><b>📌 Concept 1:</b> Summary</li>\n"
+    "    <li><b>📌 Concept 2:</b> Summary</li>\n"
+    "  </ul>\n"
+    "</div>\n\n"
+    "- Add a “Quick Recap” section with bold bullet points and emojis for visual retention.\n\n"
+    "Here is the full text from the PDF you should work with:\n\n"
+    f"{text}"
             )
             try:
                 response = model.generate_content(prompt)
@@ -419,7 +447,6 @@ def intern(request):
 def contact(request):
     return render(request, 'contact_us.html')
 
-
 def extract_text(pdf):
     pdf_document = fitz.open(stream=pdf.read(), filetype="pdf")
     pages = []
@@ -430,3 +457,6 @@ def extract_text(pdf):
     
     pdf_document.close()
     return "\n\n".join(pages)
+
+def quiz(request):
+    return render(request, 'quiz.html')

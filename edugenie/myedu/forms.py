@@ -151,3 +151,21 @@ class SetNewPassword(forms.Form):
     
 class PdfSummarizerForm(forms.Form):
     pdf = forms.FileField(required=True, label="Please upload your PDF")
+
+class QuizPreference(forms.Form):
+    number_of_questions = forms.IntegerField(required=True, min_value=1)
+    topic = forms.CharField(required=True)
+    timer = forms.IntegerField(required=False)
+    CHOICES = [
+        ('easy', 'EASY'),
+        ('medium', 'MEDIUM'),
+        ('difficult', 'DIFFICULT'),
+    ]
+    difficulty = forms.ChoiceField(choices=CHOICES, label='Select difficulty level')
+    CHOICES_TYPE = [
+        ('multiple answer correct', 'MULTIPLE ANSWER CORRECT'),
+        ('single answer correct', 'SINGLE ANSWER CORRECT'),
+        ('true and false', 'TRUE OR FALSE'),
+        ('match the columns', 'MATCH THE COLUMNS')
+    ]
+    type_of_questions = forms.ChoiceField(choices=CHOICES_TYPE, label='Select the type of questions')
