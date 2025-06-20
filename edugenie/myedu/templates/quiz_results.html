@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            background-color: #f9f9f9;
+        }
+
+        .result-box {
+            background-color: #fff;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+
+        .incorrect {
+            color: red;
+            font-weight: bold;
+        }
+
+        .summary {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .highlight {
+            background: #e0f7fa;
+            padding: 1rem;
+            border-left: 5px solid #00796b;
+            margin-bottom: 2rem;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎉 Quiz Results</h1>
+
+    <div class="highlight">
+        <p><strong>Your Score:</strong> {{ score }} / {{ total }}</p>
+        <p><strong>Percentage:</strong> {{ percentage|floatformat:2 }}%</p>
+    </div>
+
+    {% for res in results %}
+        <div class="result-box">
+            <p><strong>Q{{ forloop.counter }}:</strong> {{ res.question }}</p>
+            <ul>
+                {% for option in res.options %}
+                    <li
+                        {% if option == res.selected %}
+                            class="{% if res.is_correct %}correct{% else %}incorrect{% endif %}"
+                        {% endif %}
+                    >
+                        {{ option }}
+                        {% if option == res.correct %} ✅{% endif %}
+                        {% if option == res.selected and not res.is_correct %} ❌{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+            {% if not res.is_correct %}
+                <p><em>Correct Answer: {{ res.correct }}</em></p>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+</body>
+</html>

@@ -150,7 +150,7 @@
 from django.conf import settings
 from django.shortcuts import render, redirect
 from .tokens import account_activation_token
-from .forms import SignupForm, SigninForm,PasswordResetForm, SetNewPassword, PdfSummarizerForm, QuizPreferenceForm
+from .forms import SignupForm, SigninForm,PasswordResetForm, SetNewPassword, PdfSummarizerForm, QuizPreferenceForm, DynamicQuizForm
 from .models import Student
 from django.contrib.auth.hashers import check_password, make_password
 from django.urls import reverse
@@ -460,55 +460,152 @@ def extract_text(pdf):
 
 @csrf_exempt
 @login_required
-def quiz(request):
-    summary = None
+def quiz_preference(request):
     if request.method == "POST":
         form = QuizPreferenceForm(request.POST)
         if form.is_valid():
-            topic = form.cleaned_data['topic']
-            number_of_questions = form.cleaned_data['number_of_questions']
-            timer = form.cleaned_data['timer']
-            difficulty = form.cleaned_data['difficulty']
-            type_of_questions = form.cleaned_data['type_of_questions']
-            prompt = f"Generate a quiz on the topic '{topic}' with {number_of_questions} questions.\n" \
-                     f"Difficulty: {difficulty}. Type: {type_of_questions}.\n" \
-                    f"Time per quiz: {timer} minutes.\n"
-            if type_of_questions == 'Multiple Choice':
-              prompt += (
-        "Each question should have:\n"
-        "- A question statement\n"
-        "- Four options (A, B, C, D)\n"
-        "- The correct answer (e.g., 'C')\n"
-        "- (Optional) A brief explanation.\n"
-    )
-            elif type_of_questions == 'True/False':
-             prompt += (
-        "Each question should have:\n"
-        "- A question statement\n"
-        "- Two options: True or False\n"
-        "- The correct answer (either 'True' or 'False')\n"
-        "- (Optional) A brief explanation.\n"
-    )
-            elif type_of_questions == 'Fill in the Blank':
-             prompt += (
-        "Each question should be a sentence with a missing word (represented by '____')\n"
-        "- The correct answer should be the word that fills the blank\n"
-        "- (Optional) A brief explanation.\n"
-    )
-
-        prompt += "Return only the quiz in clean readable format. Number each question clearly."
-
-        try:
+            preferences = form.cleaned_data
+            prompt = (
+                "You are a quiz generator. Based on the user's preferences, "
+                "generate a quiz with the following details:\n"
+                f"Subject: {preferences['topic']}\n"
+                f"Difficulty: {preferences['difficulty']}\n"
+                f"Number of Questions: {preferences['number_of_questions']}\n"
+                f"Question Type: {preferences['type_of_questions']}\n"
+                f"Timer: {preferences['timer']}\n"
+                "Please format the quiz clearly with numbered questions, "
+                "and include the correct answer below each question as 'Answer: ...'\n"
+                "Each option must be labeled as A. / B. / C. / D.  and mention the correct answer using the letter (e.g., Correct Answer: C)\n"
+            )
+            try:
                 response = model.generate_content(prompt)
-                summary = response.text.strip()
-        except Exception as e:
-                summary = f"❌ Error: {str(e)}"
-
+                quiz_text = response.text.strip()
+                request.session['quiz_text'] = quiz_text  # for next view
+                return redirect('render_quiz') 
+            except Exception as e:
+                print("Gemini Error:", str(e))
+            print(">> Quiz Preferences:", preferences)
+            messages.success(request, "Your quiz preferences have been saved successfully!")
     else:
         form = QuizPreferenceForm()
-    return render(request, 'quiz.html', {
-        'form': form,
-        'summary': summary
-    })
+    return render(request, 'quiz_custom.html', {'form': form})
 
+def parse_ai_quiz(quiz_text):
+    import re
+    questions = []
+    blocks = re.split(r"\n(?=\d+\.)", quiz_text.strip())
     
+    for block in blocks:
+        lines = block.strip().split('\n')
+        if len(lines) < 2:
+            continue
+
+        question_line = lines[0].strip()
+        question_text = re.sub(r"^\d+\.\s*", "", question_line)
+
+        options = []
+        correct = ""
+
+        for line in lines[1:]:
+            line = line.strip()
+            if not line or line.startswith("```"):
+                continue
+
+            # Match labeled options: a) xyz
+            opt_match = re.match(r"([a-dA-D])\)\s+(.*)", line)
+            if opt_match:
+                label = opt_match.group(1).lower()
+                option_text = opt_match.group(2).strip()
+                options.append((label, option_text))  # store as tuple (value, label)
+            elif line.lower().startswith("correct answer") or line.lower().startswith("answer"):
+                match = re.search(r"([a-d])\)", line.lower())
+                if match:
+                    correct = match.group(1).lower()
+
+        if options:
+            questions.append({
+                "question": question_text,
+                "options": options,  # list of (a,b,c,d)
+                "correct": correct  # just the letter
+            })
+    return questions
+
+
+# def parse_ai_quiz(quiz_text):
+#     import re
+#     questions = []
+#     blocks = re.split(r"\n(?=\d+\.)", quiz_text.strip())
+#     for block in blocks:
+#         lines = block.strip().split('\n')
+#         if len(lines) < 2:
+#             continue
+
+#         question_line = lines[0].strip()
+#         question_text = re.sub(r"^\d+\.\s*", "", question_line)
+
+#         options = []
+#         correct = ""
+#         for line in lines[1:]:
+#             line = line.strip()
+#             if not line:
+#                 continue
+#             if line.lower().startswith("answer"):
+#                 correct = line.split(":", 1)[-1].strip()
+#             elif re.match(r"^[A-Da-d][).]?\s+.*", line):
+#                 # Matches A. Option or A) Option
+#                 opt_match = re.match(r"^[A-Da-d][).]?\s+(.*)", line)
+#                 if opt_match:
+#                     options.append(opt_match.group(1).strip())
+#             else:
+#                 # Assume it's just an option without A/B/C
+#                 options.append(line)
+
+#         questions.append({
+#             "question": question_text,
+#             "options": options,
+#             "correct": correct
+#         })
+#     return questions
+
+
+@csrf_exempt
+@login_required
+def render_quiz(request):
+    quiz_text = request.session.get('quiz_text', None)
+    if not quiz_text:
+        return redirect('quiz_preference')  # fallback
+
+    questions = parse_ai_quiz(quiz_text)
+
+    if request.method == "POST":
+        form = DynamicQuizForm(questions, request.POST)
+        if form.is_valid():
+            score = 0
+            results = []
+            for i, q in enumerate(questions):
+                user_ans = form.cleaned_data[f'q_{i}']
+                correct_ans = q['correct']
+                is_correct = (user_ans == correct_ans)
+                results.append({
+                    "question": q['question'],
+                    "selected": user_ans,
+                    "correct": correct_ans,
+                    "is_correct": is_correct,
+                    "options": q['options']
+                })
+                if is_correct:
+                    score += 1
+            percentage = (score / len(questions)) * 100
+            return render(request, 'quiz_results.html', {
+                'results': results,
+                'score': score,
+                'total': len(questions),
+                'percentage': percentage
+            })
+    else:
+        form = DynamicQuizForm(questions)
+
+    return render(request, 'render_quiz.html', {
+        'form': form,
+        'questions': questions
+    })

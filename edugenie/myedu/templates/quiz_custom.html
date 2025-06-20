@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<head>
+    <title>Quiz Customizer</title>
+</head>
+<body>
+    <div class= "form-container">
+        <form method = "POST">
+            {%csrf_token%}
+            <h2 class="form-title">Quiz Customizer</h2>
+            <p class="form-subtitle"><b>Customize your quiz settings</b></p>
+            <div class="form-group">
+                {{ form.topic }}
+                <label for = "{{ form.topic.id_for_label}}"> Enter Topic</label>
+            </div>
+            <div class="form-group">
+                {{ form.number_of_questions }}
+                <label for = "{{ form.number_of_questions.id_for_label}}">Enter number of Questions</label>
+            </div>
+            <div class="form-group">
+                {{ form.timer }}
+                <label for = "{{ form.timer.id_for_label}}">Enter duration of Quiz</label>
+            </div>
+            <div class="form-group">
+                {{ form.difficulty }}
+                <label for = "{{ form.difficulty.id_for_label}}">Select the difficulty</label>
+            </div>
+            <div class="form-group">
+                {{ form.type_of_questions }}
+                <label for = "{{ form.type_of_questions.id_for_label}}">Select the type of questions</label>
+            </div>
+            <button type="submit" class="submit-btn">Create Quiz</button>
+        </form>
+</body>

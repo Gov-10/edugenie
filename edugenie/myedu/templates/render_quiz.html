@@ -1,0 +1,152 @@
+{% comment %} <!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz Form</title>
+    <style>
+        .form-container {
+            width: 80%;
+            margin: 40px auto;
+            padding: 30px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-family: sans-serif;
+            background: #f9f9f9;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+        }
+
+        .question-block legend {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .submit-btn {
+            padding: 12px 20px;
+            font-size: 1rem;
+            background-color: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+        }
+
+        .submit-btn:hover {
+            background-color: #5a67d8;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <form method="POST">
+            {% csrf_token %}
+            <h2 class="form-title">📝 Quiz Form</h2>
+            <p class="form-subtitle"><b>All the best for your quiz!</b></p>
+
+            {% for field in form %}
+                <div class="question-block">
+                    <fieldset>
+                        <legend>{{ field.label }}</legend>
+                        {{ field }}
+                    </fieldset>
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="submit-btn">Submit Quiz</button>
+        </form>
+    </div>
+</body>
+</html> {% endcomment %}
+
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+            background-color: #f5f5f5;
+        }
+
+        .quiz-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: auto;
+        }
+
+        h2 {
+            margin-bottom: 1rem;
+        }
+
+        .question-block {
+            margin-bottom: 2rem;
+        }
+
+        .question-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .submit-btn {
+            padding: 0.6rem 1.2rem;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2>📝 Quiz Form</h2>
+    <p><strong>All the best for your quiz!</strong></p>
+
+    <form method="post">
+        {% csrf_token %}
+
+       {% for field in form %}
+  <div class="question-block">
+    <div class="question-title">{{ field.label }}</div>
+    <div class="options">
+      {% for radio in field %}
+        <label>{{ radio.tag }} {{ radio.choice_label }}</label>
+      {% endfor %}
+    </div>
+  </div>
+{% endfor %}
+
+        <button type="submit" class="submit-btn">Submit Quiz</button>
+    </form>
+</div>
+
+</body>
+</html>

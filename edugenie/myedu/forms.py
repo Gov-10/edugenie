@@ -152,20 +152,83 @@ class SetNewPassword(forms.Form):
 class PdfSummarizerForm(forms.Form):
     pdf = forms.FileField(required=True, label="Please upload your PDF")
 
+
+
 class QuizPreferenceForm(forms.Form):
-    number_of_questions = forms.IntegerField(required=True, min_value=1)
-    topic = forms.CharField(required=True)
-    timer = forms.IntegerField(required=False, min_value=0, label="Set timer in seconds (optional)")
-    CHOICES = [
-        ('easy', 'EASY'),
-        ('medium', 'MEDIUM'),
-        ('difficult', 'DIFFICULT'),
-    ]
-    difficulty = forms.ChoiceField(choices=CHOICES, label='Select difficulty level')
-    CHOICES_TYPE = [
-        ('multiple answer correct', 'MULTIPLE ANSWER CORRECT'),
-        ('single answer correct', 'SINGLE ANSWER CORRECT'),
-        ('true and false', 'TRUE OR FALSE'),
-        ('match the columns', 'MATCH THE COLUMNS')
-    ]
-    type_of_questions = forms.ChoiceField(choices=CHOICES_TYPE, label='Select the type of questions')
+    topic = forms.CharField(
+        label="Enter Topic",
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'like: Python, Aviation, History, etc...'
+    }),
+    )
+
+    number_of_questions = forms.IntegerField(
+        label="Number of Questions",
+        required=True,
+        min_value=1,
+        max_value=50,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'e.g. 5, 10, 15'
+        })
+    )
+
+    timer = forms.IntegerField(
+        label="Quiz Duration (minutes)",
+        required=False,
+        min_value=1,
+        max_value=60,
+        initial=5,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'e.g. 5, 10 (optional)'
+        })
+    )
+
+    difficulty = forms.ChoiceField(
+        label="Select Difficulty",
+        choices=[
+            ('easy', 'Easy'),
+            ('medium', 'Medium'),
+            ('hard', 'Hard')
+        ],
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+    type_of_questions = forms.ChoiceField(
+        label="Type of Questions",
+        choices=[
+            ('mcq', 'Multiple Choice'),
+            ('true_false', 'True/False'),
+            ('fill_blank', 'Fill in the Blank')
+        ],
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+
+
+# class DynamicQuizForm(forms.Form):
+#     def __init__(self, questions, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         for i, q in enumerate(questions):
+#             choices = [(opt, opt) for opt in q['options']]
+#             self.fields[f'q_{i}'] = forms.ChoiceField(
+#                 label=q['question'],
+#                 choices=choices,
+#                 widget=forms.RadioSelect,
+#                 required=True
+#             )
+
+class DynamicQuizForm(forms.Form):
+    def __init__(self, questions, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i, q in enumerate(questions):
+            self.fields[f'q_{i}'] = forms.ChoiceField(
+                label=q['question'],
+                choices=q['options'],  # already (value, label)
+                widget=forms.RadioSelect,
+                required=True
+            )
+
