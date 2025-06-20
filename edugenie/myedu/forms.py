@@ -152,10 +152,10 @@ class SetNewPassword(forms.Form):
 class PdfSummarizerForm(forms.Form):
     pdf = forms.FileField(required=True, label="Please upload your PDF")
 
-class QuizPreference(forms.Form):
+class QuizPreferenceForm(forms.Form):
     number_of_questions = forms.IntegerField(required=True, min_value=1)
     topic = forms.CharField(required=True)
-    timer = forms.IntegerField(required=False)
+    timer = forms.IntegerField(required=False, min_value=0, label="Set timer in seconds (optional)")
     CHOICES = [
         ('easy', 'EASY'),
         ('medium', 'MEDIUM'),

@@ -150,7 +150,7 @@
 from django.conf import settings
 from django.shortcuts import render, redirect
 from .tokens import account_activation_token
-from .forms import SignupForm, SigninForm,PasswordResetForm, SetNewPassword, PdfSummarizerForm
+from .forms import SignupForm, SigninForm,PasswordResetForm, SetNewPassword, PdfSummarizerForm, QuizPreferenceForm
 from .models import Student
 from django.contrib.auth.hashers import check_password, make_password
 from django.urls import reverse
@@ -458,5 +458,57 @@ def extract_text(pdf):
     pdf_document.close()
     return "\n\n".join(pages)
 
+@csrf_exempt
+@login_required
 def quiz(request):
-    return render(request, 'quiz.html')
+    summary = None
+    if request.method == "POST":
+        form = QuizPreferenceForm(request.POST)
+        if form.is_valid():
+            topic = form.cleaned_data['topic']
+            number_of_questions = form.cleaned_data['number_of_questions']
+            timer = form.cleaned_data['timer']
+            difficulty = form.cleaned_data['difficulty']
+            type_of_questions = form.cleaned_data['type_of_questions']
+            prompt = f"Generate a quiz on the topic '{topic}' with {number_of_questions} questions.\n" \
+                     f"Difficulty: {difficulty}. Type: {type_of_questions}.\n" \
+                    f"Time per quiz: {timer} minutes.\n"
+            if type_of_questions == 'Multiple Choice':
+              prompt += (
+        "Each question should have:\n"
+        "- A question statement\n"
+        "- Four options (A, B, C, D)\n"
+        "- The correct answer (e.g., 'C')\n"
+        "- (Optional) A brief explanation.\n"
+    )
+            elif type_of_questions == 'True/False':
+             prompt += (
+        "Each question should have:\n"
+        "- A question statement\n"
+        "- Two options: True or False\n"
+        "- The correct answer (either 'True' or 'False')\n"
+        "- (Optional) A brief explanation.\n"
+    )
+            elif type_of_questions == 'Fill in the Blank':
+             prompt += (
+        "Each question should be a sentence with a missing word (represented by '____')\n"
+        "- The correct answer should be the word that fills the blank\n"
+        "- (Optional) A brief explanation.\n"
+    )
+
+        prompt += "Return only the quiz in clean readable format. Number each question clearly."
+
+        try:
+                response = model.generate_content(prompt)
+                summary = response.text.strip()
+        except Exception as e:
+                summary = f"❌ Error: {str(e)}"
+
+    else:
+        form = QuizPreferenceForm()
+    return render(request, 'quiz.html', {
+        'form': form,
+        'summary': summary
+    })
+
+    
