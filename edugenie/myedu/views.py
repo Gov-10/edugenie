@@ -170,6 +170,7 @@ import os
 from dotenv import load_dotenv
 import google.generativeai as genai
 import fitz
+import re
 
 
 load_dotenv()
@@ -465,8 +466,9 @@ def quiz_preference(request):
         form = QuizPreferenceForm(request.POST)
         if form.is_valid():
             preferences = form.cleaned_data
+            print(">> Quiz Preferences:", preferences)
             prompt = (
-                "You are a quiz generator. Based on the user's preferences, "
+                "You are a quiz generator and an exam paper setter. Please be very accurate and avoid giving any wrong answers. You are allowed to use any website or any book for reference.Based on the user's preferences, "
                 "generate a quiz with the following details:\n"
                 f"Subject: {preferences['topic']}\n"
                 f"Difficulty: {preferences['difficulty']}\n"
@@ -476,10 +478,13 @@ def quiz_preference(request):
                 "Please format the quiz clearly with numbered questions, "
                 "and include the correct answer below each question as 'Answer: ...'\n"
                 "Each option must be labeled as A. / B. / C. / D.  and mention the correct answer using the letter (e.g., Correct Answer: C)\n"
+                "Please ensure the quiz is engaging and educational, suitable for students preparing for exams.\n\n"
+                "Please do not include text like Time's up! Check your answers above.**   Directly provide the quiz content without any additional instructions or comments.\n"
             )
             try:
                 response = model.generate_content(prompt)
                 quiz_text = response.text.strip()
+                print(">>> AI Raw Output:\n", quiz_text)
                 request.session['quiz_text'] = quiz_text  # for next view
                 return redirect('render_quiz') 
             except Exception as e:
@@ -490,51 +495,11 @@ def quiz_preference(request):
         form = QuizPreferenceForm()
     return render(request, 'quiz_custom.html', {'form': form})
 
-def parse_ai_quiz(quiz_text):
-    import re
-    questions = []
-    blocks = re.split(r"\n(?=\d+\.)", quiz_text.strip())
-    
-    for block in blocks:
-        lines = block.strip().split('\n')
-        if len(lines) < 2:
-            continue
-
-        question_line = lines[0].strip()
-        question_text = re.sub(r"^\d+\.\s*", "", question_line)
-
-        options = []
-        correct = ""
-
-        for line in lines[1:]:
-            line = line.strip()
-            if not line or line.startswith("```"):
-                continue
-
-            # Match labeled options: a) xyz
-            opt_match = re.match(r"([a-dA-D])\)\s+(.*)", line)
-            if opt_match:
-                label = opt_match.group(1).lower()
-                option_text = opt_match.group(2).strip()
-                options.append((label, option_text))  # store as tuple (value, label)
-            elif line.lower().startswith("correct answer") or line.lower().startswith("answer"):
-                match = re.search(r"([a-d])\)", line.lower())
-                if match:
-                    correct = match.group(1).lower()
-
-        if options:
-            questions.append({
-                "question": question_text,
-                "options": options,  # list of (a,b,c,d)
-                "correct": correct  # just the letter
-            })
-    return questions
-
-
 # def parse_ai_quiz(quiz_text):
 #     import re
 #     questions = []
 #     blocks = re.split(r"\n(?=\d+\.)", quiz_text.strip())
+    
 #     for block in blocks:
 #         lines = block.strip().split('\n')
 #         if len(lines) < 2:
@@ -545,26 +510,166 @@ def parse_ai_quiz(quiz_text):
 
 #         options = []
 #         correct = ""
+
 #         for line in lines[1:]:
 #             line = line.strip()
-#             if not line:
+#             if not line or line.startswith("```"):
 #                 continue
-#             if line.lower().startswith("answer"):
-#                 correct = line.split(":", 1)[-1].strip()
-#             elif re.match(r"^[A-Da-d][).]?\s+.*", line):
-#                 # Matches A. Option or A) Option
-#                 opt_match = re.match(r"^[A-Da-d][).]?\s+(.*)", line)
-#                 if opt_match:
-#                     options.append(opt_match.group(1).strip())
-#             else:
-#                 # Assume it's just an option without A/B/C
-#                 options.append(line)
 
-#         questions.append({
-#             "question": question_text,
-#             "options": options,
-#             "correct": correct
-#         })
+#             # Match labeled options: a) xyz
+#             opt_match = re.match(r"([a-dA-D])\)\s+(.*)", line)
+#             if opt_match:
+#                 label = opt_match.group(1).lower()
+#                 option_text = opt_match.group(2).strip()
+#                 options.append((label, option_text))  # store as tuple (value, label)
+#             elif line.lower().startswith("correct answer") or line.lower().startswith("answer"):
+#                 match = re.search(r"([a-d])\)", line.lower())
+#                 if match:
+#                     correct = match.group(1).lower()
+
+#         if options:
+#             questions.append({
+#                 "question": question_text,
+#                 "options": options,  # list of (a,b,c,d)
+#                 "correct": correct  # just the letter
+#             })
+#     print(">> Parsed Questions:", questions)
+#     return questions
+
+# def parse_ai_quiz(quiz_text):
+#     import re
+
+#     # Split questions by "**1." or "1."
+#     blocks = re.split(r"\*\*\s*\d+\.\s+|\n\d+\.\s+", quiz_text.strip())
+#     questions = []
+
+#     for block in blocks:
+#         block = block.strip()
+#         if not block or len(block) < 5:
+#             continue
+
+#         lines = block.split('\n')
+#         question_text = lines[0].strip()
+#         options = []
+#         correct = ""
+
+#         for line in lines[1:]:
+#             line = line.strip()
+
+#             # Skip code blocks or empty
+#             if line.startswith("```") or not line:
+#                 continue
+
+#             # Match options like A. or A)
+#             opt_match = re.match(r"([A-Da-d])[).]?\s+(.*)", line)
+#             if opt_match:
+#                 options.append((opt_match.group(1).lower(), opt_match.group(2).strip()))
+
+#             # Match Answer: C (with or without bold)
+#             ans_match = re.search(r"answer[:\s]*([A-D])", line, re.IGNORECASE)
+#             if ans_match:
+#                 correct = ans_match.group(1).lower()
+
+#         if question_text and options:
+#             questions.append({
+#                 "question": question_text,
+#                 "options": options,
+#                 "correct": correct
+#             })
+
+#     print(">> Parsed Questions:", questions)
+#     return questions
+
+def parse_ai_quiz(quiz_text):
+    import re
+
+    blocks = re.split(r"\*\*\s*\d+\.\s+|\n\d+\.\s+", quiz_text.strip())
+    questions = []
+
+    for block in blocks:
+        block = block.strip()
+        if not block or len(block) < 5:
+            continue
+
+        lines = block.split('\n')
+        question_lines = []
+        options = []
+        correct = ""
+
+        for line in lines:
+            line = line.strip()
+
+            # Skip empty lines
+            if not line:
+                continue
+
+            # Match options like A. or A)
+            opt_match = re.match(r"([A-Da-d])[).]?\s+(.*)", line)
+            if opt_match:
+                options.append((opt_match.group(1).lower(), opt_match.group(2).strip()))
+                continue
+
+            # Match correct answer
+            ans_match = re.search(r"answer[:\s]*([A-Da-d])", line, re.IGNORECASE)
+            if ans_match:
+                correct = ans_match.group(1).lower()
+                continue
+
+            # Otherwise, treat as part of question
+            question_lines.append(line)
+
+        # Combine full question including any code
+        question_text = '\n'.join(question_lines).strip()
+
+        if question_text and options:
+            questions.append({
+                "question": question_text,
+                "options": options,
+                "correct": correct
+            })
+
+    print(">> Parsed Questions:", questions)
+    return questions
+# def parse_ai_quiz(quiz_text):
+#     import re
+#     questions = []
+#     blocks = re.split(r"\n\d+\.\s+", quiz_text.strip())
+#     for block in blocks:
+#         lines = block.strip().split('\n')
+#         if not lines or len(lines) < 2:
+#             continue
+
+#         question_line = lines[0].strip()
+#         question_text = question_line.replace('**', '').strip()
+
+#         options = []
+#         correct = ""
+
+#         for line in lines[1:]:
+#             line = line.strip()
+#             if not line or line.startswith("```"):
+#                 continue
+
+#             # Match options like: A. Option or A) Option
+#             opt_match = re.match(r"([A-Da-d])[.)]?\s+(.*)", line)
+#             if opt_match:
+#                 label = opt_match.group(1).lower()
+#                 option_text = opt_match.group(2).strip()
+#                 options.append((label, option_text))
+
+#             elif "answer" in line.lower():
+#               match = re.search(r"answer[:\s]*([A-D])", line, re.IGNORECASE)
+#               if match:
+#                correct = match.group(1).lower()
+
+#         if question_text and options:
+#             questions.append({
+#                 "question": question_text,
+#                 "options": options,
+#                 "correct": correct
+#             })
+
+#     print(">> Parsed Questions:", questions)
 #     return questions
 
 

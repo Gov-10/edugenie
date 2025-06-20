@@ -74,7 +74,7 @@
 </body>
 </html> {% endcomment %}
 
-{% load custom_filters %}
+{% comment %} {% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -148,5 +148,733 @@
     </form>
 </div>
 
+</body>
+</html> {% endcomment %}
+
+
+
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 0%, transparent 70%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 70%),
+                radial-gradient(circle at 40% 60%, rgba(255,255,255,0.06) 0%, transparent 70%);
+            animation: backgroundPulse 12s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes backgroundPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+            50% { transform: scale(1.1) rotate(2deg); opacity: 1; }
+        }
+
+        /* Floating geometric shapes */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(255,255,255,0.03) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.03) 75%),
+                linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.03) 75%);
+            background-size: 60px 60px;
+            background-position: 0 0, 0 30px, 30px -30px, -30px 0px;
+            animation: geometricFloat 25s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes geometricFloat {
+            0% { transform: translateY(0px) translateX(0px); }
+            100% { transform: translateY(-100px) translateX(50px); }
+        }
+
+        .quiz-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 3rem;
+            border-radius: 24px;
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.15),
+                0 0 0 1px rgba(255,255,255,0.1),
+                inset 0 1px 0 rgba(255,255,255,0.6);
+            max-width: 900px;
+            margin: auto;
+            position: relative;
+            z-index: 2;
+            animation: containerSlideIn 1s ease-out;
+            overflow: hidden;
+        }
+
+        @keyframes containerSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .quiz-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #667eea);
+            background-size: 200% 100%;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 0%; }
+            50% { background-position: 100% 0%; }
+        }
+
+        .quiz-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 35px 70px rgba(0,0,0,0.2),
+                0 0 0 1px rgba(255,255,255,0.1),
+                inset 0 1px 0 rgba(255,255,255,0.6);
+        }
+
+        h2 {
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            font-weight: 800;
+            letter-spacing: -1px;
+            animation: titleGlow 2s ease-in-out infinite alternate;
+            position: relative;
+        }
+
+        @keyframes titleGlow {
+            0% { filter: brightness(1) drop-shadow(0 0 5px rgba(102, 126, 234, 0.3)); }
+            100% { filter: brightness(1.2) drop-shadow(0 0 15px rgba(102, 126, 234, 0.5)); }
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+            animation: underlineExpand 1s ease-out 0.5s both;
+        }
+
+        @keyframes underlineExpand {
+            from { width: 0; }
+            to { width: 100px; }
+        }
+
+        .quiz-container > p {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2.5rem;
+            font-weight: 500;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .quiz-container > p strong {
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .question-block {
+            margin-bottom: 2.5rem;
+            padding: 2rem;
+            background: rgba(248, 250, 252, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            animation: questionSlideIn 0.6s ease-out forwards;
+            animation-delay: calc(var(--index) * 0.1s);
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        .question-block:nth-child(2) { --index: 1; }
+        .question-block:nth-child(3) { --index: 2; }
+        .question-block:nth-child(4) { --index: 3; }
+        .question-block:nth-child(5) { --index: 4; }
+        .question-block:nth-child(6) { --index: 5; }
+        .question-block:nth-child(7) { --index: 6; }
+        .question-block:nth-child(8) { --index: 7; }
+        .question-block:nth-child(9) { --index: 8; }
+        .question-block:nth-child(10) { --index: 9; }
+
+        @keyframes questionSlideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .question-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .question-block:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 
+                0 15px 30px rgba(102, 126, 234, 0.15),
+                0 0 0 1px rgba(102, 126, 234, 0.1);
+        }
+
+        .question-block:hover::before {
+            width: 8px;
+        }
+
+        .question-title {
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            font-size: 1.2rem;
+            color: #333;
+            position: relative;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .question-title::before {
+            content: counter(question-counter);
+            counter-increment: question-counter;
+            position: absolute;
+            left: -2.5rem;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .quiz-container {
+            counter-reset: question-counter;
+        }
+
+        .options {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .options label {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.2rem;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(226, 232, 240, 0.5);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .options label::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .options label:hover {
+            background: rgba(255, 255, 255, 1);
+            border-color: rgba(102, 126, 234, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
+            color: #2d3748;
+        }
+
+        .options label:hover::before {
+            opacity: 1;
+        }
+
+        .options input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #667eea;
+            margin-right: 0.8rem;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Custom radio button styling */
+        .options input[type="radio"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #cbd5e0;
+            border-radius: 50%;
+            background: white;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .options input[type="radio"]:checked {
+            border-color: #667eea;
+            background: #667eea;
+            animation: radioCheck 0.3s ease-out;
+        }
+
+        @keyframes radioCheck {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .options input[type="radio"]:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: radioInner 0.2s ease-out 0.1s both;
+        }
+
+        @keyframes radioInner {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .options label:has(input:checked) {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-color: #667eea;
+            color: #667eea;
+            font-weight: 600;
+            transform: translateY(-3px);
+            box-shadow: 
+                0 12px 25px rgba(102, 126, 234, 0.2),
+                0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .submit-btn {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            margin: 2rem auto 0;
+            display: block;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            animation: buttonPulse 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes buttonPulse {
+            0% { box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4); }
+            100% { box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6), 0 0 0 4px rgba(102, 126, 234, 0.1); }
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Progress indicator */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Responsive design */
+        @media screen and (max-width: 768px) {
+            body {
+                margin: 1rem;
+            }
+            
+            .quiz-container {
+                padding: 2rem;
+                border-radius: 16px;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .question-block {
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            
+            .question-title::before {
+                left: -2rem;
+                width: 1.5rem;
+                height: 1.5rem;
+                font-size: 0.8rem;
+            }
+            
+            .options label {
+                padding: 0.8rem 1rem;
+                font-size: 0.95rem;
+            }
+            
+            .submit-btn {
+                padding: 0.9rem 2rem;
+                font-size: 1rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .quiz-container {
+                padding: 1.5rem;
+                margin: 0.5rem;
+            }
+            
+            h2 {
+                font-size: 1.7rem;
+            }
+            
+            .question-block {
+                padding: 1rem;
+            }
+            
+            .question-title {
+                font-size: 1.1rem;
+            }
+            
+            .options label {
+                padding: 0.7rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .submit-btn {
+                width: 100%;
+                padding: 0.8rem;
+            }
+        }
+
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus states for accessibility */
+        .options input[type="radio"]:focus {
+            outline: 3px solid rgba(102, 126, 234, 0.3);
+            outline-offset: 2px;
+        }
+
+        .submit-btn:focus {
+            outline: 3px solid rgba(102, 126, 234, 0.3);
+            outline-offset: 2px;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+
+        /* Loading animation */
+        .submit-btn.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .submit-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            margin: auto;
+            border: 2px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s ease infinite;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="quiz-container">
+        <h2>📝 Quiz Form</h2>
+        <p><strong>All the best for your quiz!</strong></p>
+
+        <form method="post" id="quizForm">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="question-block">
+                <div class="question-title">{{ field.label }}</div>
+                <div class="options">
+                    {% for radio in field %}
+                    <label>{{ radio.tag }} {{ radio.choice_label }}</label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="submit-btn" id="submitBtn">Submit Quiz</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('quizForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const progressBar = document.getElementById('progressBar');
+            const questionBlocks = document.querySelectorAll('.question-block');
+            const totalQuestions = questionBlocks.length;
+            
+            // Update progress bar based on answered questions
+            function updateProgress() {
+                const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+                const progress = (answeredQuestions / totalQuestions) * 100;
+                progressBar.style.width = progress + '%';
+                
+                // Change submit button state when all questions are answered
+                if (answeredQuestions === totalQuestions) {
+                    submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    submitBtn.style.animation = 'none';
+                    submitBtn.style.boxShadow = '0 8px 20px rgba(16, 185, 129, 0.4)';
+                } else {
+                    submitBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                    submitBtn.style.animation = 'buttonPulse 2s ease-in-out infinite alternate';
+                }
+            }
+            
+            // Add event listeners to all radio buttons
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', updateProgress);
+                
+                // Add smooth animation when selecting
+                radio.addEventListener('change', function() {
+                    const label = this.closest('label');
+                    label.style.animation = 'none';
+                    setTimeout(() => {
+                        label.style.animation = 'radioCheck 0.3s ease-out';
+                    }, 10);
+                });
+            });
+            
+            // Form submission with loading state
+            form.addEventListener('submit', function(e) {
+                const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+                
+                if (answeredQuestions < totalQuestions) {
+                    e.preventDefault();
+                    alert('Please answer all questions before submitting!');
+                    return;
+                }
+                
+                submitBtn.classList.add('loading');
+                submitBtn.textContent = 'Submitting...';
+                submitBtn.disabled = true;
+            });
+            
+            // Smooth scroll to next unanswered question
+            function scrollToNextQuestion() {
+                const unansweredQuestion = document.querySelector('.question-block input[type="radio"]:not(:checked)');
+                if (unansweredQuestion) {
+                    const questionBlock = unansweredQuestion.closest('.question-block');
+                    questionBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    questionBlock.style.animation = 'none';
+                    setTimeout(() => {
+                        questionBlock.style.animation = 'questionHighlight 1s ease-out';
+                    }, 100);
+                }
+            }
+            
+            // Add question highlighting animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes questionHighlight {
+                    0%, 100% { transform: translateY(0) scale(1); }
+                    50% { transform: translateY(-5px) scale(1.02); box-shadow: 0 15px 30px rgba(102, 126, 234, 0.2); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Initialize progress
+            updateProgress();
+            
+            // Add intersection observer for animations
+            const observerOptions = {
+                threshold: 0.2,
+                rootMargin: '0px 0px -100px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+                        entry.target.classList.add('animated');
+                        entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+                    }
+                });
+            }, observerOptions);
+            
+            questionBlocks.forEach(block => {
+                observer.observe(block);
+            });
+            
+            // Add keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Tab') {
+                    // Smooth scroll to focused element
+                    setTimeout(() => {
+                        const focused = document.activeElement;
+                        if (focused.type === 'radio') {
+                            focused.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }, 100);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
