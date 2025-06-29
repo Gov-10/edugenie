@@ -951,14 +951,14 @@ btn.addEventListener("click", () => {
 
     <div class="service-card">
       <span class="service-icon">🎯</span>
-      <h3>Exclusive Internships</h3>
-      <p>Access to exclusive internship programs with leading companies across various industries and domains.</p>
+      <h3>Personalised Quiz</h3>
+      <p>Generate and play a customisable quiz</p>
       <ul class="service-features">
-        <li>Paid internship opportunities</li>
-        <li>Mentorship programs</li>
-        <li>Real-world project experience</li>
-        <li>Pre-placement offers</li>
+        <li>Real Time analysis</li>
+        <li>Highly customisable</li>
+        <li>Relevant Questions</li>
       </ul>
+      <button onClick= openQuiz()>Click here to play</button>
     </div>
 
     <div class="service-card">
@@ -987,14 +987,15 @@ btn.addEventListener("click", () => {
 
     <div class="service-card">
       <span class="service-icon">📊</span>
-      <h3>Career Analytics</h3>
-      <p>Data-driven insights into market trends, salary benchmarks, and career progression paths in your field.</p>
+      <h3>Resume Reviewer</h3>
+      <p>Our AI model can review your Resume, give an ATS Score, and also give you tips on how to improve your resume!!</p>
       <ul class="service-features">
-        <li>Market trend analysis</li>
-        <li>Salary benchmarking</li>
-        <li>Career path mapping</li>
-        <li>Performance tracking</li>
+        <li>Unbiased Resume checking</li>
+        <li>Real time ATS Score</li>
+        <li>Comparing Resume with 97-98 ATS resume</li>
+        <li>Real time, personalised Facebook</li>
       </ul>
+      <button onClick= openResume()>Test it out!!</button>
     </div>
 
     <div class="service-card">
@@ -1021,6 +1022,15 @@ btn.addEventListener("click", () => {
     const logo = document.querySelector(".logo");
     const rocket = document.getElementById("rocket");
 
+
+    function openResume()
+    {
+      window.location = "/resume_tester/";
+    }
+    function openQuiz()
+    {
+      window.location = "/quiz_preference/";
+    }
     function clicky()
     {
       window.alert("You’ve been logged out successfully.");

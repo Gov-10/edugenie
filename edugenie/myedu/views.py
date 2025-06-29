@@ -150,7 +150,7 @@
 from django.conf import settings
 from django.shortcuts import render, redirect
 from .tokens import account_activation_token
-from .forms import SignupForm, SigninForm,PasswordResetForm, SetNewPassword, PdfSummarizerForm, QuizPreferenceForm, DynamicQuizForm
+from .forms import SignupForm, SigninForm,PasswordResetForm, SetNewPassword, PdfSummarizerForm, QuizPreferenceForm, DynamicQuizForm, ResumeUploadForm
 from .models import Student
 from django.contrib.auth.hashers import check_password, make_password
 from django.urls import reverse
@@ -171,7 +171,9 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 import fitz
 import re
-
+from .utils.resume_parse import parse_resume
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import tempfile
 
 load_dotenv()
 gemini_api_key = os.getenv("GEMINI_API_KEY")
@@ -188,6 +190,10 @@ def about_us(request):
 
 def chat_page(request):
     return render(request, 'chat.html')
+
+
+def professional(request):
+    return render(request, 'new.html')
 
 def chat_response(request):
     if request.method == "POST":
@@ -312,7 +318,7 @@ def signin(request):
                 if stud:
                     return redirect('stud')
                 else:
-                    return redirect('intern')
+                    return render(request, 'new.html', {'form': form, 'success': True, 'RECAPTCHA_PUBLIC_KEY': settings.RECAPTCHA_PUBLIC_KEY})
             else:
                 print(">> Invalid username or password")
                 form.add_error(None, "Invalid username or password")
@@ -442,7 +448,7 @@ def verify_recaptcha(token):
 def stud(request):
     return render(request, 'stud.html')
 
-def intern(request):
+def professional(request):
     return render(request, 'new.html')
 
 def contact(request):
@@ -713,4 +719,23 @@ def render_quiz(request):
     return render(request, 'render_quiz.html', {
         'form': form,
         'questions': questions
+    })
+
+@login_required
+@csrf_exempt
+def resume_tester(request):
+    parsed_text = None
+    if request.method == "POST":
+        form = ResumeUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            print(">> Form is valid")
+            resume = request.FILES['resume']
+            print(">> Resume file:", resume.name)
+            parsed_text = parse_resume(resume)
+            print(">> Parsed Text:", parsed_text)
+    else:
+        form = ResumeUploadForm()
+    return render(request, 'resume_tester.html', {
+        'form': form,
+        'parsed_text': parsed_text
     })

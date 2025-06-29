@@ -232,3 +232,10 @@ class DynamicQuizForm(forms.Form):
                 required=True
             )
 
+
+class ResumeUploadForm(forms.Form):
+    resume = forms.FileField(
+        label="Upload your resume",
+        required=True,
+        help_text="Accepted formats: PDF, DOCX, TXT"
+    )
