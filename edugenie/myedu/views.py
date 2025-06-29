@@ -171,9 +171,11 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 import fitz
 import re
+import json
 from .utils.resume_parse import parse_resume
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import tempfile
+import boto3
 
 load_dotenv()
 gemini_api_key = os.getenv("GEMINI_API_KEY")
@@ -181,7 +183,7 @@ gemini_api_key = os.getenv("GEMINI_API_KEY")
 
 genai.configure(api_key=gemini_api_key)
 model = genai.GenerativeModel("gemini-1.5-flash")
-
+bedrock = boto3.client("bedrock-runtime", region_name="ap-south-1")
 def home(request):
     return render(request, 'home.html')
 
@@ -197,16 +199,35 @@ def professional(request):
 
 def chat_response(request):
     if request.method == "POST":
-        message = request.POST.get("message")
+        message = request.POST.get("message", "")
         try:
-            response = model.generate_content(message)
-            reply = response.text.strip()
-            return JsonResponse({"response": reply})
-        except Exception as e:
-             print("Gemini Error:", str(e))
-             return JsonResponse({"error": str(e)}, status=500)
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+            prompt = f"Human: {message}\nAssistant:"
 
+            body = {
+                "prompt": prompt,
+                "max_tokens_to_sample": 500,
+                "temperature": 0.7,
+                "stop_sequences": ["\nHuman:"]
+            }
+
+            response = bedrock.invoke_model(
+                modelId="amazon.titan-text-express-v1",
+                contentType="application/json",
+                accept="application/json", 
+                body=json.dumps({
+                    "inputText": message
+                })
+            )
+
+            response_body = json.loads(response['body'].read())
+            reply = response_body['results'][0]['outputText'].strip()
+
+            return JsonResponse({"response": reply})
+
+        except Exception as e:
+            print("Bedrock Error:", str(e))
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "Invalid request"}, status=400)
 # def signup(request):
 #     if request.method == "POST":
 #         form = SignupForm(request.POST)
