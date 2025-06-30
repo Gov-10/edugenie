@@ -178,6 +178,7 @@ import tempfile
 import boto3
 import time
 import requests
+import markdown2
 
 load_dotenv()
 gemini_api_key = os.getenv("GEMINI_API_KEY")
@@ -670,11 +671,131 @@ def resume_tester(request):
             print(">> Resume file:", resume.name)
             parsed_text = parse_resume(resume)
             print(">> Parsed Text:", parsed_text)
+            prompt = f"""
+You are a professional resume reviewer and career mentor. Please analyze the following resume text and provide comprehensive feedback in a beautifully formatted, visually appealing response.
+
+Resume Text:
+{parsed_text}
+
+FORMATTING INSTRUCTIONS:
+Please structure your response using the following beautiful, professional format with proper markdown styling:
+
+# 📋 Resume Analysis Report
+
+## 👤 **Candidate Overview**
+[Brief 2-3 sentence summary of the candidate's profile]
+
+---
+
+## ⭐ **Strengths & Highlights**
+### 🎯 What's Working Well:
+- **[Strength Category]**: [Specific detail]
+- **[Strength Category]**: [Specific detail]
+- **[Strength Category]**: [Specific detail]
+
+---
+
+## 🔧 **Areas for Improvement**
+
+### 📝 **Content Enhancement**
+| Section | Current Issue | Recommended Action |
+|---------|---------------|-------------------|
+| [Section] | [Issue] | [Specific improvement] |
+| [Section] | [Issue] | [Specific improvement] |
+
+### 🎨 **Formatting & Structure**
+- **Issue**: [Problem description]
+  - *Solution*: [Specific fix]
+- **Issue**: [Problem description]
+  - *Solution*: [Specific fix]
+
+---
+
+## 🚀 **Action Plan for Improvement**
+
+### 🎯 **Priority 1 - Critical Changes**
+1. **[Action Item]**
+   - Why: [Explanation]
+   - How: [Specific steps]
+
+2. **[Action Item]**
+   - Why: [Explanation]
+   - How: [Specific steps]
+
+### 📈 **Priority 2 - Enhancement Opportunities**
+1. **[Action Item]**
+   - Impact: [Expected benefit]
+   - Implementation: [How to do it]
+
+---
+
+## 🤖 **ATS Compatibility Score**
+
+### 📊 **Overall ATS Score: [X]/100**
+
+| Criteria | Score | Status | Notes |
+|----------|-------|--------|-------|
+| **Keyword Optimization** | [X]/25 | [🟢/🟡/🔴] | [Specific feedback] |
+| **Format Compatibility** | [X]/25 | [🟢/🟡/🔴] | [Specific feedback] |
+| **Section Organization** | [X]/25 | [🟢/🟡/🔴] | [Specific feedback] |
+| **Contact Information** | [X]/25 | [🟢/🟡/🔴] | [Specific feedback] |
+
+**Legend:** 🟢 Excellent | 🟡 Needs Improvement | 🔴 Critical Issue
+
+---
+
+## 💡 **Industry-Specific Recommendations**
+[Tailored advice based on the candidate's target industry/role]
+
+---
+
+## ✨ **Next Steps**
+### 📅 **30-Day Improvement Timeline**
+- **Week 1**: [Specific tasks]
+- **Week 2**: [Specific tasks]
+- **Week 3**: [Specific tasks]
+- **Week 4**: [Final review and optimization]
+
+---
+
+## 🎯 **Interview Readiness Prediction**
+**Current State**: [Assessment]
+**With Improvements**: [Projected outcome]
+
+---
+
+*💪 Remember: Your resume is your personal marketing document. With these improvements, you'll be well-positioned to capture recruiters' attention and land those interview opportunities!*
+
+TONE GUIDELINES:
+- Be encouraging and supportive like a caring mentor
+- Use positive, constructive language
+- Provide specific, actionable advice
+- Include motivational elements
+- Be honest about weaknesses while maintaining optimism
+- Focus on growth and potential
+
+ANALYSIS DEPTH:
+- Provide detailed, section-by-section feedback
+- Include specific examples and suggestions
+- Give honest ATS scoring with clear explanations
+- Offer industry-specific insights where relevant
+- Create a clear action plan for improvement
+
+End Goal: Transform this resume into an interview-generating document that stands out to both ATS systems and human recruiters.
+"""
+            try:
+                response = model.generate_content(prompt)
+                parsed_text = response.text.strip()
+                print(">> AI Response:", parsed_text)
+                html_response = markdown2.markdown(parsed_text, extras=["tables", "fenced-code-blocks"])
+            except Exception as e:
+                parsed_text = f"❌ Error: {str(e)}"
+                print(">> Gemini Error:", str(e))
     else:
         form = ResumeUploadForm()
     return render(request, 'resume_tester.html', {
         'form': form,
-        'parsed_text': parsed_text
+        'parsed_text': html_response
     })
 
 @csrf_exempt

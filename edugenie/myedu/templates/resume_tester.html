@@ -1,29 +1,2080 @@
-<!DOCTYPE html>
+{% comment %} <!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Resume Tester</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Tester - Professional Analysis Tool</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Styling */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 3rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-subtitle {
+            color: #718096;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* File Upload Styling */
+        .file-upload-container {
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        .file-upload-wrapper {
+            border: 3px dashed #cbd5e0;
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-upload-wrapper:hover {
+            border-color: #667eea;
+            background: #edf2f7;
+            transform: translateY(-2px);
+        }
+
+        .file-upload-wrapper.dragover {
+            border-color: #667eea;
+            background: #e6fffa;
+            transform: scale(1.02);
+        }
+
+        .file-upload-icon {
+            font-size: 3rem;
+            color: #a0aec0;
+            margin-bottom: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .file-upload-wrapper:hover .file-upload-icon {
+            color: #667eea;
+        }
+
+        .file-upload-text {
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .file-upload-subtext {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-name-display {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #e6fffa;
+            border-radius: 8px;
+            color: #38a169;
+            font-weight: 500;
+            display: none;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 2rem auto 0;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Error Messages */
+        .error-container {
+            background: #fed7d7;
+            border: 1px solid #feb2b2;
+            color: #c53030;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .error-container p {
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Resume Analysis Styling */
+        .resume-analysis {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+            line-height: 1.7;
+        }
+
+        .analysis-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .analysis-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .analysis-subtitle {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .resume-analysis h1 {
+            color: #2b6cb0;
+            font-size: 2.2rem;
+            margin: 2rem 0 1rem 0;
+            padding: 1rem 0;
+            border-bottom: 3px solid #bee3f8;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .resume-analysis h2 {
+            color: #38a169;
+            font-size: 1.8rem;
+            margin: 2.5rem 0 1rem 0;
+            padding: 0.5rem 0;
+            border-left: 4px solid #68d391;
+            padding-left: 1rem;
+        }
+
+        .resume-analysis h3 {
+            color: #e53e3e;
+            font-size: 1.4rem;
+            margin: 1.5rem 0 0.5rem 0;
+            font-weight: 600;
+        }
+
+        .resume-analysis table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .resume-analysis th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            text-align: left;
+            padding: 1rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .resume-analysis td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            background: white;
+        }
+
+        .resume-analysis tr:nth-child(even) td {
+            background: #f7fafc;
+        }
+
+        .resume-analysis tr:hover td {
+            background: #edf2f7;
+        }
+
+        .resume-analysis ul {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        .resume-analysis li {
+            margin-bottom: 0.8rem;
+            padding-left: 0.5rem;
+            position: relative;
+        }
+
+        .resume-analysis li::before {
+            content: "▸";
+            color: #667eea;
+            font-weight: bold;
+            position: absolute;
+            left: -1rem;
+        }
+
+        /* Status Indicators */
+        .status-good {
+            color: #38a169;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .status-good::before {
+            content: "✓";
+            background: #38a169;
+            color: white;
+            border-radius: 50%;
+            width: 1.2rem;
+            height: 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .status-medium {
+            color: #ed8936;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .status-medium::before {
+            content: "!";
+            background: #ed8936;
+            color: white;
+            border-radius: 50%;
+            width: 1.2rem;
+            height: 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .status-bad {
+            color: #e53e3e;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .status-bad::before {
+            content: "✗";
+            background: #e53e3e;
+            color: white;
+            border-radius: 50%;
+            width: 1.2rem;
+            height: 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        /* Analysis Content */
+        .analysis-content {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 1rem 0;
+            border-left: 4px solid #667eea;
+            white-space: pre-wrap;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .loading-spinner {
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-container {
+                padding: 2rem;
+            }
+
+            .file-upload-wrapper {
+                padding: 2rem 1rem;
+            }
+
+            .resume-analysis {
+                padding: 2rem;
+            }
+
+            .analysis-title {
+                font-size: 2rem;
+            }
+
+            .resume-analysis h1 {
+                font-size: 1.8rem;
+            }
+
+            .resume-analysis h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Animation for form appearance */
+        .form-container {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .resume-analysis {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class = "form-container">
-        <h1>Resume Tester</h1>
-        <form method = "post" enctype="multipart/form-data">
-            {%csrf_token%}
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-file-alt"></i> Resume Tester</h1>
+            <p>Professional AI-powered resume analysis and optimization</p>
+        </div>
+
+        <div class="form-container">
+            <h2 class="form-title">
+                <i class="fas fa-upload"></i>
+                Upload Your Resume
+            </h2>
+            <p class="form-subtitle">
+                Get instant professional feedback and ATS compatibility analysis
+            </p>
             
-            {{form.resume}}
-            <label for = "{{form.resume.id_for_label}}">Upload your resume</label>
-            <br>
-             
-            {% if form.non_field_errors %}
-            <div style="color: red; font-size: 0.9rem; margin-bottom: 1rem;">
-                {% for error in form.non_field_errors %}
-                    <p><b>{{ error }}</b></p>
-                {% endfor %}
+            <form method="post" enctype="multipart/form-data" id="resumeForm">
+                {%csrf_token%}
+                
+                <div class="file-upload-container">
+                    <div class="file-upload-wrapper" id="fileUploadWrapper">
+                        <div class="file-upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="file-upload-text">
+                            Click to upload or drag and drop
+                        </div>
+                        <div class="file-upload-subtext">
+                            Supports PDF, DOC, DOCX files (Max 10MB)
+                        </div>
+                        {{form.resume}}
+                    </div>
+                    <div class="file-name-display" id="fileNameDisplay"></div>
+                </div>
+
+                {% if form.non_field_errors %}
+                    <div class="error-container">
+                        {% for error in form.non_field_errors %}
+                            <p><i class="fas fa-exclamation-triangle"></i> {{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-search"></i>
+                    Analyze Resume
+                </button>
+            </form>
+
+            <div class="loading" id="loadingDiv">
+                <div class="loading-spinner"></div>
+                <p>Analyzing your resume... This may take a few moments.</p>
+            </div>
+        </div>
+
+        {% if parsed_text %}
+            <div class="resume-analysis">
+                <div class="analysis-header">
+                    <h2 class="analysis-title">
+                        <i class="fas fa-chart-line"></i>
+                        Resume Analysis Results
+                    </h2>
+                    <p class="analysis-subtitle">
+                        Comprehensive feedback to boost your interview chances
+                    </p>
+                </div>
+                
+                <div class="analysis-content">{{ parsed_text|safe }}</div>
             </div>
         {% endif %}
-            <button type="submit">Submit</button>
-        </form>
     </div>
-    {% if parsed_text %}
-    <h2>Resume Analysis Result:</h2>
-    <pre style="white-space: pre-wrap; background: #f5f5f5; padding: 1rem;">{{ parsed_text }}</pre>
-{% endif %}
+
+    <script>
+        // File upload functionality
+        const fileInput = document.querySelector('input[type="file"]');
+        const fileUploadWrapper = document.getElementById('fileUploadWrapper');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const submitBtn = document.getElementById('submitBtn');
+        const loadingDiv = document.getElementById('loadingDiv');
+        const form = document.getElementById('resumeForm');
+
+        // Style the file input
+        if (fileInput) {
+            fileInput.className = 'file-input';
+            
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    fileNameDisplay.innerHTML = `
+                        <i class="fas fa-file-alt"></i>
+                        Selected: <strong>${file.name}</strong>
+                        <span style="color: #718096; margin-left: 1rem;">
+                            (${(file.size / 1024 / 1024).toFixed(2)} MB)
+                        </span>
+                    `;
+                    fileNameDisplay.style.display = 'block';
+                    fileUploadWrapper.style.borderColor = '#38a169';
+                    fileUploadWrapper.style.background = '#f0fff4';
+                }
+            });
+        }
+
+        // Drag and drop functionality
+        fileUploadWrapper.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            fileUploadWrapper.classList.add('dragover');
+        });
+
+        fileUploadWrapper.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            fileUploadWrapper.classList.remove('dragover');
+        });
+
+        fileUploadWrapper.addEventListener('drop', function(e) {
+            e.preventDefault();
+            fileUploadWrapper.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+
+        // Form submission with loading state
+        form.addEventListener('submit', function(e) {
+            if (fileInput.files.length === 0) {
+                e.preventDefault();
+                alert('Please select a resume file to upload.');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+            loadingDiv.style.display = 'block';
+        });
+
+        // Auto-scroll to results if they exist
+        {% if parsed_text %}
+            setTimeout(() => {
+                document.querySelector('.resume-analysis').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 500);
+        {% endif %}
+    </script>
 </body>
+</html> {% endcomment %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Tester - Professional Analysis Tool</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --secondary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --warning-gradient: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);
+            --danger-gradient: linear-gradient(135deg, #fd1d1d 0%, #fcb045 100%);
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --dark-glass: rgba(0, 0, 0, 0.1);
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --bg-light: #f7fafc;
+            --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 20px 60px rgba(0, 0, 0, 0.15);
+            --shadow-strong: 0 30px 80px rgba(0, 0, 0, 0.2);
+            --border-radius: 24px;
+            --border-radius-small: 16px;
+            --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            color: var(--text-primary);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 226, 0.3) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+            50% { opacity: 0.8; transform: scale(1.1) rotate(180deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Floating particles animation */
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.5; }
+        }
+
+        /* Header Styling */
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            color: white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: headerGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes headerGlow {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+        }
+
+        .header h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #f0f8ff, #fff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShine 3s ease-in-out infinite;
+            position: relative;
+        }
+
+        @keyframes textShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .header p {
+            font-size: 1.4rem;
+            opacity: 0.95;
+            font-weight: 400;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 0.95; transform: translateY(0); }
+        }
+
+        /* Glassmorphism Form Container */
+        .form-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            box-shadow: var(--shadow-medium);
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .form-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-title i {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .form-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            font-size: 1.2rem;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Enhanced File Upload */
+        .file-upload-container {
+            position: relative;
+            margin: 2.5rem 0;
+        }
+
+        .file-upload-wrapper {
+            border: 3px dashed rgba(102, 126, 234, 0.3);
+            border-radius: var(--border-radius);
+            padding: 4rem 2rem;
+            text-align: center;
+            transition: var(--transition-smooth);
+            background: rgba(247, 250, 252, 0.8);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .file-upload-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: var(--transition-smooth);
+            z-index: -1;
+        }
+
+        .file-upload-wrapper:hover {
+            border-color: rgba(102, 126, 234, 0.6);
+            transform: translateY(-8px) rotateX(5deg);
+            box-shadow: var(--shadow-strong);
+        }
+
+        .file-upload-wrapper:hover::before {
+            opacity: 0.1;
+        }
+
+        .file-upload-wrapper.dragover {
+            border-color: rgba(102, 126, 234, 0.8);
+            background: rgba(230, 255, 250, 0.9);
+            transform: translateY(-10px) scale(1.02) rotateX(10deg);
+            box-shadow: 0 40px 100px rgba(102, 126, 234, 0.3);
+        }
+
+        .file-upload-icon {
+            font-size: 4rem;
+            color: rgba(102, 126, 234, 0.7);
+            margin-bottom: 1.5rem;
+            transition: var(--transition-bounce);
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        .file-upload-wrapper:hover .file-upload-icon {
+            color: rgba(102, 126, 234, 1);
+            transform: scale(1.2) rotate(15deg);
+        }
+
+        .file-upload-text {
+            font-size: 1.4rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+        }
+
+        .file-upload-wrapper:hover .file-upload-text {
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .file-upload-subtext {
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 400;
+            transition: var(--transition-smooth);
+        }
+
+        .file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .file-name-display {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: var(--success-gradient);
+            border-radius: var(--border-radius-small);
+            color: white;
+            font-weight: 600;
+            display: none;
+            box-shadow: var(--shadow-soft);
+            animation: slideInUp 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-name-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: successShimmer 2s infinite;
+        }
+
+        @keyframes successShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Enhanced Submit Button */
+        .submit-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 1.2rem 4rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: var(--transition-bounce);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin: 3rem auto 0;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.6);
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+            transition: left 0.6s ease;
+        }
+
+        .submit-btn:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-btn:disabled:hover {
+            transform: none;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Enhanced Error Messages */
+        .error-container {
+            background: var(--danger-gradient);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius-small);
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            overflow: hidden;
+            animation: errorSlide 0.5s ease-out;
+        }
+
+        @keyframes errorSlide {
+            from { opacity: 0; transform: translateX(-100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .error-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            animation: errorPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes errorPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .error-container p {
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Enhanced Resume Analysis */
+        .resume-analysis {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 2px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 4rem;
+            box-shadow: var(--shadow-strong);
+            margin-top: 3rem;
+            line-height: 1.8;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .resume-analysis::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .analysis-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-bottom: 2rem;
+            border-bottom: 3px solid rgba(102, 126, 234, 0.2);
+            position: relative;
+        }
+
+        .analysis-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            animation: titlePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .analysis-subtitle {
+            color: var(--text-muted);
+            font-size: 1.3rem;
+            font-weight: 400;
+        }
+
+        .resume-analysis h1 {
+            background: var(--secondary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 3rem 0 1.5rem 0;
+            padding: 1.5rem 0;
+            border-bottom: 4px solid rgba(79, 172, 254, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .resume-analysis h1::before {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: var(--secondary-gradient);
+            animation: underlineGrow 2s ease-out;
+        }
+
+        @keyframes underlineGrow {
+            from { width: 0; }
+            to { width: 100px; }
+        }
+
+        .resume-analysis h2 {
+            background: var(--success-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 3rem 0 1.5rem 0;
+            padding: 1rem 0 1rem 2rem;
+            border-left: 6px solid rgba(56, 161, 105, 0.5);
+            position: relative;
+            transition: var(--transition-smooth);
+        }
+
+        .resume-analysis h2:hover {
+            transform: translateX(10px);
+            border-left-color: rgba(56, 161, 105, 1);
+        }
+
+        .resume-analysis h3 {
+            color: #e53e3e;
+            font-size: 1.6rem;
+            margin: 2rem 0 1rem 0;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+
+        .resume-analysis h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--danger-gradient);
+            transform: scaleX(0);
+            transition: var(--transition-smooth);
+            transform-origin: left;
+        }
+
+        .resume-analysis h3:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* Enhanced Tables */
+        .resume-analysis table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            border-radius: var(--border-radius-small);
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+            background: white;
+        }
+
+        .resume-analysis th {
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 700;
+            text-align: left;
+            padding: 1.5rem;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resume-analysis th::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: headerShimmer 3s infinite;
+        }
+
+        @keyframes headerShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .resume-analysis td {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            background: white;
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .resume-analysis tr:nth-child(even) td {
+            background: rgba(247, 250, 252, 0.5);
+        }
+
+        .resume-analysis tr:hover td {
+            background: rgba(102, 126, 234, 0.05);
+            transform: scale(1.01);
+        }
+
+        /* Enhanced Lists */
+        .resume-analysis ul {
+            margin: 1.5rem 0 1.5rem 2rem;
+            position: relative;
+        }
+
+        .resume-analysis li {
+            margin-bottom: 1rem;
+            padding: 0.8rem 0.8rem 0.8rem 2rem;
+            position: relative;
+            background: rgba(247, 250, 252, 0.5);
+            border-radius: 12px;
+            transition: var(--transition-smooth);
+            border-left: 4px solid transparent;
+        }
+
+        .resume-analysis li:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-left-color: rgba(102, 126, 234, 0.5);
+            transform: translateX(8px);
+        }
+
+        .resume-analysis li::before {
+            content: "▸";
+            color: rgba(102, 126, 234, 0.8);
+            font-weight: bold;
+            position: absolute;
+            left: 0.8rem;
+            top: 0.8rem;
+            font-size: 1.2rem;
+            transition: var(--transition-smooth);
+        }
+
+        .resume-analysis li:hover::before {
+            color: rgba(102, 126, 234, 1);
+            transform: scale(1.2);
+        }
+
+        /* Enhanced Status Indicators */
+        .status-good {
+            color: #38a169;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(56, 161, 105, 0.1);
+            border-radius: 20px;
+            transition: var(--transition-smooth);
+        }
+
+        .status-good:hover {
+            background: rgba(56, 161, 105, 0.2);
+            transform: scale(1.05);
+        }
+
+        .status-good::before {
+            content: "✓";
+            background: var(--success-gradient);
+            color: white;
+            border-radius: 50%;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            animation: successPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes successPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(56, 161, 105, 0.7); }
+            50% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(56, 161, 105, 0); }
+        }
+
+        .status-medium {
+            color: #ed8936;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(237, 137, 54, 0.1);
+            border-radius: 20px;
+            transition: var(--transition-smooth);
+        }
+
+        .status-medium:hover {
+            background: rgba(237, 137, 54, 0.2);
+            transform: scale(1.05);
+        }
+
+        .status-medium::before {
+            content: "!";
+            background: var(--warning-gradient);
+            color: white;
+            border-radius: 50%;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            animation: warningPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes warningPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .status-bad {
+            color: #e53e3e;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(229, 62, 62, 0.1);
+            border-radius: 20px;
+            transition: var(--transition-smooth);
+        }
+
+        .status-bad:hover {
+            background: rgba(229, 62, 62, 0.2);
+            transform: scale(1.05);
+        }
+
+        .status-bad::before {
+            content: "✗";
+            background: var(--danger-gradient);
+            color: white;
+            border-radius: 50%;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            animation: dangerShake 2s ease-in-out infinite;
+        }
+
+        @keyframes dangerShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        /* Enhanced Analysis Content */
+        .analysis-content {
+            background: rgba(248, 250, 252, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius-small);
+            padding: 2.5rem;
+            margin: 2rem 0;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            white-space: pre-wrap;
+            font-family: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 1rem;
+            line-height: 1.7;
+            overflow-x: auto;
+            position: relative;
+            transition: var(--transition-smooth);
+        }
+
+        .analysis-content:hover {
+            border-color: rgba(102, 126, 234, 0.3);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .analysis-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--primary-gradient);
+            border-radius: 0 6px 6px 0;
+        }
+
+        /* Enhanced Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 3rem 0;
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-radius: var(--border-radius);
+            border: 2px solid var(--glass-border);
+        }
+
+        .loading-spinner {
+            border: 6px solid rgba(102, 126, 234, 0.1);
+            border-top: 6px solid rgba(102, 126, 234, 1);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite, colorShift 3s ease-in-out infinite;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .loading-spinner::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            right: -6px;
+            bottom: -6px;
+            border: 6px solid transparent;
+            border-top: 6px solid rgba(118, 75, 162, 0.5);
+            border-radius: 50%;
+            animation: spin 2s linear infinite reverse;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes colorShift {
+            0%, 100% { border-top-color: rgba(102, 126, 234, 1); }
+            33% { border-top-color: rgba(118, 75, 162, 1); }
+            66% { border-top-color: rgba(240, 147, 251, 1); }
+        }
+
+        .loading p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            animation: loadingText 2s ease-in-out infinite;
+        }
+
+        @keyframes loadingText {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Scroll Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: var(--primary-gradient);
+            z-index: 1000;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .form-container, .resume-analysis {
+                padding: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .header p {
+                font-size: 1.1rem;
+            }
+
+            .form-container, .resume-analysis {
+                padding: 2rem;
+            }
+
+            .form-title {
+                font-size: 2rem;
+            }
+
+            .file-upload-wrapper {
+                padding: 3rem 1.5rem;
+            }
+
+            .file-upload-icon {
+                font-size: 3rem;
+            }
+
+            .submit-btn {
+                padding: 1rem 2.5rem;
+                font-size: 1rem;
+            }
+
+            .analysis-title {
+                font-size: 2rem;
+            }
+
+            .resume-analysis h1 {
+                font-size: 2rem;
+            }
+
+            .resume-analysis h2 {
+                font-size: 1.6rem;
+            }
+
+            .resume-analysis h3 {
+                font-size: 1.3rem;
+            }
+
+            .resume-analysis th,
+            .resume-analysis td {
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container, .resume-analysis {
+                padding: 1.5rem;
+                margin: 1rem 0;
+            }
+
+            .file-upload-wrapper {
+                padding: 2rem 1rem;
+            }
+
+            .submit-btn {
+                padding: 0.8rem 2rem;
+                font-size: 0.9rem;
+            }
+
+            .analysis-content {
+                padding: 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animation for form appearance */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) rotateX(10deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0deg);
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 6px;
+            transition: var(--transition-smooth);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-gradient);
+        }
+
+        /* Selection styling */
+        ::selection {
+            background: rgba(102, 126, 234, 0.3);
+            color: var(--text-primary);
+        }
+
+        ::-moz-selection {
+            background: rgba(102, 126, 234, 0.3);
+            color: var(--text-primary);
+        }
+
+        /* Focus styles for accessibility */
+        .file-input:focus + .file-upload-wrapper {
+            outline: 3px solid rgba(102, 126, 234, 0.5);
+            outline-offset: 2px;
+        }
+
+        .submit-btn:focus {
+            outline: 3px solid rgba(102, 126, 234, 0.5);
+            outline-offset: 2px;
+        }
+
+        /* Micro-interactions */
+        .form-container:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-strong);
+        }
+
+        .resume-analysis:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            
+            .header, .form-container {
+                display: none;
+            }
+            
+            .resume-analysis {
+                background: white;
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+        }
+
+        /* Reduced motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .particle {
+                display: none;
+            }
+        }
+
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            .form-container, .resume-analysis {
+                border: 3px solid black;
+                background: white;
+            }
+            
+            .submit-btn {
+                background: black;
+                border: 2px solid white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+    
+    <!-- Floating Particles -->
+    <div class="floating-particles" id="particles"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-file-alt"></i> Resume Tester</h1>
+            <p>Professional AI-powered resume analysis and optimization</p>
+        </div>
+
+        <div class="form-container">
+            <h2 class="form-title">
+                <i class="fas fa-upload"></i>
+                Upload Your Resume
+            </h2>
+            <p class="form-subtitle">
+                Get instant professional feedback and ATS compatibility analysis with advanced AI insights
+            </p>
+            
+            <form method="post" enctype="multipart/form-data" id="resumeForm">
+                {%csrf_token%}
+                
+                <div class="file-upload-container">
+                    <div class="file-upload-wrapper" id="fileUploadWrapper">
+                        <div class="file-upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="file-upload-text">
+                            Click to upload or drag and drop
+                        </div>
+                        <div class="file-upload-subtext">
+                            Supports PDF, DOC, DOCX files (Max 10MB)
+                        </div>
+                        {{form.resume}}
+                    </div>
+                    <div class="file-name-display" id="fileNameDisplay"></div>
+                </div>
+
+                {% if form.non_field_errors %}
+                    <div class="error-container">
+                        {% for error in form.non_field_errors %}
+                            <p><i class="fas fa-exclamation-triangle"></i> {{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-search"></i>
+                    Analyze Resume
+                </button>
+            </form>
+
+            <div class="loading" id="loadingDiv">
+                <div class="loading-spinner"></div>
+                <p>Analyzing your resume with advanced AI... This may take a few moments.</p>
+            </div>
+        </div>
+
+        {% if parsed_text %}
+            <div class="resume-analysis">
+                <div class="analysis-header">
+                    <h2 class="analysis-title">
+                        <i class="fas fa-chart-line"></i>
+                        Resume Analysis Results
+                    </h2>
+                    <p class="analysis-subtitle">
+                        Comprehensive feedback to boost your interview chances and ATS compatibility
+                    </p>
+                </div>
+                
+                <div class="analysis-content">{{ parsed_text|safe }}</div>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Scroll progress bar
+        function updateScrollProgress() {
+            const scrollProgress = document.getElementById('scrollProgress');
+            const scrollTop = document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollPercentage = (scrollTop / scrollHeight) * 100;
+            scrollProgress.style.width = scrollPercentage + '%';
+        }
+
+        // File upload functionality
+        const fileInput = document.querySelector('input[type="file"]');
+        const fileUploadWrapper = document.getElementById('fileUploadWrapper');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const submitBtn = document.getElementById('submitBtn');
+        const loadingDiv = document.getElementById('loadingDiv');
+        const form = document.getElementById('resumeForm');
+
+        // Initialize particles and scroll progress
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            updateScrollProgress();
+        });
+
+        window.addEventListener('scroll', updateScrollProgress);
+
+        // Style the file input
+        if (fileInput) {
+            fileInput.className = 'file-input';
+            
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Validate file type
+                    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                    if (!allowedTypes.includes(file.type)) {
+                        alert('Please upload a PDF, DOC, or DOCX file.');
+                        fileInput.value = '';
+                        return;
+                    }
+                    
+                    // Validate file size (10MB)
+                    if (file.size > 10 * 1024 * 1024) {
+                        alert('File size must be less than 10MB.');
+                        fileInput.value = '';
+                        return;
+                    }
+                    
+                    fileNameDisplay.innerHTML = `
+                        <i class="fas fa-file-alt"></i>
+                        Selected: <strong>${file.name}</strong>
+                        <span style="color: rgba(255,255,255,0.8); margin-left: 1rem;">
+                            (${(file.size / 1024 / 1024).toFixed(2)} MB)
+                        </span>
+                    `;
+                    fileNameDisplay.style.display = 'block';
+                    fileUploadWrapper.style.borderColor = 'rgba(56, 161, 105, 0.8)';
+                    fileUploadWrapper.style.background = 'rgba(240, 255, 244, 0.9)';
+                    
+                    // Add success animation
+                    fileUploadWrapper.style.transform = 'scale(1.02)';
+                    setTimeout(() => {
+                        fileUploadWrapper.style.transform = 'scale(1)';
+                    }, 200);
+                }
+            });
+        }
+
+        // Enhanced drag and drop functionality
+        let dragCounter = 0;
+
+        fileUploadWrapper.addEventListener('dragenter', function(e) {
+            e.preventDefault();
+            dragCounter++;
+            fileUploadWrapper.classList.add('dragover');
+        });
+
+        fileUploadWrapper.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            dragCounter--;
+            if (dragCounter === 0) {
+                fileUploadWrapper.classList.remove('dragover');
+            }
+        });
+
+        fileUploadWrapper.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+
+        fileUploadWrapper.addEventListener('drop', function(e) {
+            e.preventDefault();
+            dragCounter = 0;
+            fileUploadWrapper.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+
+        // Enhanced form submission with loading state
+        form.addEventListener('submit', function(e) {
+            if (fileInput.files.length === 0) {
+                e.preventDefault();
+                
+                // Shake animation for empty upload
+                fileUploadWrapper.style.animation = 'shake 0.5s ease-in-out';
+                setTimeout(() => {
+                    fileUploadWrapper.style.animation = '';
+                }, 500);
+                
+                // Modern alert-style notification
+                showNotification('Please select a resume file to upload.', 'warning');
+                return;
+            }
+
+            // Enhanced loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+            submitBtn.style.background = 'linear-gradient(135deg, #a0aec0 0%, #718096 100%)';
+            loadingDiv.style.display = 'block';
+            
+            // Smooth scroll to loading
+            setTimeout(() => {
+                loadingDiv.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }, 300);
+        });
+
+        // Custom notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'warning' ? 'var(--warning-gradient)' : 'var(--primary-gradient)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                box-shadow: var(--shadow-medium);
+                z-index: 1000;
+                font-weight: 600;
+                animation: slideInRight 0.5s ease-out;
+                max-width: 300px;
+            `;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.5s ease-in forwards';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 3000);
+        }
+
+        // Add shake animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+                20%, 40%, 60%, 80% { transform: translateX(10px); }
+            }
+            
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Auto-scroll to results if they exist with enhanced animation
+        {% if parsed_text %}
+            setTimeout(() => {
+                const analysisElement = document.querySelector('.resume-analysis');
+                if (analysisElement) {
+                    // Add entrance animation
+                    analysisElement.style.opacity = '0';
+                    analysisElement.style.transform = 'translateY(50px) scale(0.95)';
+                    
+                    analysisElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    setTimeout(() => {
+                        analysisElement.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+                        analysisElement.style.opacity = '1';
+                        analysisElement.style.transform = 'translateY(0) scale(1)';
+                    }, 800);
+                }
+            }, 500);
+        {% endif %}
+
+        // Enhanced keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.target === fileUploadWrapper) {
+                fileInput.click();
+            }
+        });
+
+        // Add accessibility attributes
+        fileUploadWrapper.setAttribute('tabindex', '0');
+        fileUploadWrapper.setAttribute('role', 'button');
+        fileUploadWrapper.setAttribute('aria-label', 'Upload resume file');
+        
+        // Performance optimization: Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                } else {
+                    entry.target.style.animationPlayState = 'paused';
+                }
+            });
+        }, observerOptions);
+
+        // Observe animated elements
+        document.querySelectorAll('.particle, .form-container, .resume-analysis').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
