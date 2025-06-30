@@ -3,43 +3,152 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dropdown Menu</title>
+  <title>About Us - Edugenie</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    /* Style for About us */
-    .about {
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      padding: 80px 0;
       text-align: center;
-      font-size: 64px;
-      font-weight: 400;
-      margin: 40px 0; /* Adds spacing around the heading */
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .about {
+      font-size: 4rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 20px;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 2;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-subtitle {
+      font-size: 1.4rem;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 300;
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Navigation Dropdown */
+    .nav-section {
+      background: white;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
     .dropdown {
       position: relative;
       display: block;
       width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
     }
 
     .dropbtn {
       width: 100%;
-      background-color: #f1f1f1;
-      color: #333;
-      padding: 15px 20px;
-      font-size: 16px;
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      color: #2d3748;
+      padding: 20px 30px;
+      font-size: 18px;
+      font-weight: 600;
       border: none;
-      border-bottom: 1px solid #ccc;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dropbtn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+      transition: all 0.5s;
+    }
+
+    .dropbtn:hover::before {
+      left: 100%;
+    }
+
+    .dropbtn:hover {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
     }
 
     .dropbtn svg {
       flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .dropdown:hover .dropbtn svg {
+      transform: rotate(180deg);
     }
 
     .dropdown-content {
@@ -47,74 +156,464 @@
       position: absolute;
       left: 0;
       width: 100%;
-      background-color: white;
-      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-      z-index: 1;
+      background: white;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      border-radius: 0 0 15px 15px;
+      overflow: hidden;
+      z-index: 1000;
     }
 
     .dropdown-content a {
-      color: black;
-      padding: 12px 20px;
+      color: #2d3748;
+      padding: 18px 30px;
       text-decoration: none;
       display: block;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border-left: 4px solid transparent;
     }
 
     .dropdown-content a:hover {
-      background-color: #f0f0f0;
+      background: linear-gradient(90deg, #f7fafc, #edf2f7);
+      border-left-color: #667eea;
+      transform: translateX(5px);
+      color: #667eea;
     }
 
     .dropdown:hover .dropdown-content {
       display: block;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Content Section */
+    .content-section {
+      background: white;
+      padding: 60px 0;
+    }
+
+    .content-block {
+      background: white;
+      margin-bottom: 50px;
+      padding: 50px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .content-block:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .content-block::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+      background-size: 200% 100%;
+      animation: gradientShift 3s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .content-block h1 {
+      font-size: 2.5rem;
+      color: #2d3748;
+      margin-bottom: 30px;
+      font-weight: 700;
+      position: relative;
+      padding-left: 20px;
+    }
+
+    .content-block h1::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 40px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 2px;
+    }
+
+    .content-block p {
+      font-size: 1.2rem;
+      color: #4a5568;
+      line-height: 1.8;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .feature-card {
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .feature-card:hover {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .feature-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .feature-description {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* Stats Section */
+    .stats-section {
+      background: linear-gradient(135deg, #2d3748, #4a5568);
+      padding: 80px 0;
+      color: white;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      text-align: center;
+    }
+
+    .stat-item {
+      padding: 30px;
+    }
+
+    .stat-number {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #667eea, #f093fb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(135deg, #1a202c, #2d3748);
+      color: white;
+      padding: 60px 0 30px;
+      text-align: center;
+    }
+
+    .footer-content {
+      margin-bottom: 30px;
+    }
+
+    .footer-content p {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .footer-links {
+      margin: 30px 0;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      padding: 10px 15px;
+      border-radius: 25px;
+    }
+
+    .footer-links a:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .copyright {
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      padding-top: 30px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .about {
+        font-size: 2.5rem;
+      }
+
+      .hero-section {
+        padding: 60px 0;
+      }
+
+      .content-block {
+        padding: 30px 20px;
+        margin-bottom: 30px;
+      }
+
+      .content-block h1 {
+        font-size: 2rem;
+      }
+
+      .dropbtn {
+        padding: 15px 20px;
+        font-size: 16px;
+      }
+
+      .dropdown-content a {
+        padding: 15px 20px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+      }
+
+      .stat-number {
+        font-size: 2.5rem;
+      }
+    }
+
+    /* Smooth scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Loading animation */
+    .content-block {
+      animation: slideInUp 0.8s ease-out both;
+      animation-delay: calc(var(--block-index) * 0.2s);
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
-
-  <div class="about">About us</div>
-
-  <div class="dropdown">
-    <button class="dropbtn">
-      <span>Introduction</span>
-      <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-        <path d="M5 7L10 12L15 7" fill="#3C4043" />
-      </svg>
-    </button>
-    <div class="dropdown-content">
-      <a href="#overview">An overview of the Edugenie</a>
-      <a href="#features">What Edugenie is</a>
-      <a href="#limitations">How Edugenie works</a>
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="about">About Us</div>
+      <p class="hero-subtitle">Discover the story behind Edugenie and our mission to revolutionize education through innovative technology</p>
     </div>
-  </div>
-  <div>
-  <h1>An overview of the Edugenie</h1>
-  <p style="text-align: center;">Edugenie sdsfkvjvnkjn kjnrf kjwnfekjwe kj
-    efgferhe<br>
-    ______________________________________________________________________
-  </p>
-  </div>
-  <div>
-  <h1>What Edugenie is</h1>
-  <p style="text-align: center;">Edugenie sdsfkvjvnkjn kjnrf kjwnfekjwe kj
-    efgferhe <br>
-    ______________________________________________________________________
-  </p>
-  </div>
-  <div>
-  <h1>How Edugenie works</h1>
-  <p style="text-align: center;">Edugenie sdsfkvjvnkjn kjnrf kjwnfekjwe kj
-    efgferhe
-  </p>
-  </div>
-  <footer style="background-color: #f1f1f1; padding: 20px; text-align: center; font-size: 14px; color: #555;">
-    <p>made by </p>
-    <p>&copy; 2025 Your Company Name. All rights reserved.</p>
-  <p>
-    <a href="#privacy" style="margin: 0 10px; color: #555; text-decoration: none;">Privacy Policy</a> |
-    <a href="#terms" style="margin: 0 10px; color: #555; text-decoration: none;">Terms of Service</a> |
-    <a href="#contact" style="margin: 0 10px; color: #555; text-decoration: none;">Contact Us</a>
-  </p>
-</footer>
+  </section>
 
+  <!-- Navigation Section -->
+  <section class="nav-section">
+    <div class="container">
+      <div class="dropdown">
+        <button class="dropbtn">
+          <span>📚 Introduction</span>
+          <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 7L10 12L15 7" fill="currentColor" />
+          </svg>
+        </button>
+        <div class="dropdown-content">
+          <a href="#overview">🔍 An overview of the Edugenie</a>
+          <a href="#features">⭐ What Edugenie is</a>
+          <a href="#limitations">⚙️ How Edugenie works</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- Content Section -->
+  <section class="content-section">
+    <div class="container">
+      <!-- Overview Block -->
+      <div class="content-block" id="overview" style="--block-index: 0">
+        <h1>🔍 An Overview of Edugenie</h1>
+        <p>
+          Edugenie is a revolutionary educational platform that harnesses the power of artificial intelligence to create personalized learning experiences. Our mission is to make quality education accessible to everyone, regardless of their background or learning style. Through cutting-edge technology and innovative pedagogical approaches, we're transforming how students learn and educators teach.
+        </p>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <div class="feature-title">Personalized Learning</div>
+            <div class="feature-description">Tailored content that adapts to individual learning patterns and preferences</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🚀</div>
+            <div class="feature-title">Advanced AI</div>
+            <div class="feature-description">Powered by state-of-the-art machine learning algorithms</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🌍</div>
+            <div class="feature-title">Global Access</div>
+            <div class="feature-description">Available worldwide with multilingual support</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- What Edugenie Is -->
+      <div class="content-block" id="features" style="--block-index: 1">
+        <h1>⭐ What Edugenie Is</h1>
+        <p>
+          At its core, Edugenie is an intelligent tutoring system that combines the best aspects of human teaching with the scalability and consistency of artificial intelligence. We provide interactive lessons, real-time feedback, and comprehensive progress tracking to ensure every learner achieves their full potential. Our platform serves students, educators, and institutions looking to enhance their educational outcomes through technology.
+        </p>
+      </div>
+
+      <!-- How Edugenie Works -->
+      <div class="content-block" id="limitations" style="--block-index: 2">
+        <h1>⚙️ How Edugenie Works</h1>
+        <p>
+          Edugenie employs sophisticated algorithms to analyze learning patterns, identify knowledge gaps, and recommend personalized study paths. Our system continuously adapts based on user interactions, ensuring that the learning experience becomes more effective over time. Through natural language processing, computer vision, and predictive analytics, we create an immersive educational environment that feels intuitive and engaging for learners of all ages.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">100K+</div>
+          <div class="stat-label">Active Students</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">95%</div>
+          <div class="stat-label">Success Rate</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">50+</div>
+          <div class="stat-label">Countries Served</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">Support Available</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <p><strong>Made by the Edugenie Team</strong></p>
+        <p>Empowering minds, transforming futures through innovative education technology</p>
+      </div>
+      <div class="footer-links">
+        <a href="/">🏠 Home</a>
+        <a href="/contact_us/">📞 Contact Us</a>
+      </div>
+      <div class="copyright">
+        <p>&copy; 2025 Edugenie. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Add smooth scrolling and enhanced interactions
+    document.addEventListener('DOMContentLoaded', function() {
+      // Animate content blocks on scroll
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.animationPlayState = 'running';
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.content-block').forEach(block => {
+        observer.observe(block);
+      });
+
+      // Add click tracking for dropdown links
+      document.querySelectorAll('.dropdown-content a').forEach(link => {
+        link.addEventListener('click', function(e) {
+          const targetId = this.getAttribute('href');
+          const targetElement = document.querySelector(targetId);
+          
+          if (targetElement) {
+            e.preventDefault();
+            targetElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+            
+            // Close dropdown after click
+            const dropdown = document.querySelector('.dropdown');
+            dropdown.style.pointerEvents = 'none';
+            setTimeout(() => {
+              dropdown.style.pointerEvents = 'auto';
+            }, 300);
+          }
+        });
+      });
+
+      // Add parallax effect to hero section
+      window.addEventListener('scroll', function() {
+        const scrolled = window.pageYOffset;
+        const heroSection = document.querySelector('.hero-section');
+        const rate = scrolled * -0.5;
+        
+        if (heroSection) {
+          heroSection.style.transform = `translateY(${rate}px)`;
+        }
+      });
+    });
+  </script>
 </body>
 </html>
