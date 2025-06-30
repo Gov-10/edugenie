@@ -1,142 +1,561 @@
+{% comment %} <h2>💬 What People Say</h2>
+{% for t in testimonials %}
+  <div class="card mb-3 p-3">
+    <strong>{{ t.name }}</strong>
+    <p>{{ t.message }}</p>
+    <small><i>{{ t.timestamp }}</i></small>
+  </div>
+{% empty %}
+  <p>No testimonials yet.</p>
+{% endfor %}
+<div class="text-center mt-4">
+  <a href="{% url 'submit_testimonial' %}" class="btn btn-primary">Submit Your Testimonial</a>
+</div> {% endcomment %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Testimonials</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: white;
-      font-family: Inter, sans-serif;
-    }
-    
-    .main-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 20px;
-      text-align: center;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What People Say</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .title {
-      font-size: 3rem;
-      margin-bottom: 40px;
-      font-weight: 400;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
 
-    .testimonials-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 40px;
-      justify-content: center;
-    }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
 
-    .testimonial-card {
-      flex: 1 1 calc(33.333% - 40px);
-      max-width: 350px;
-      background: white;
-      box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-      border-radius: 10px;
-      padding: 20px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
 
-    .circle-image {
-      width: 120px;
-      height: 120px;
-      background: #D9D9D9;
-      border-radius: 50%;
-      margin-bottom: 20px;
-    }
+        h2 {
+            color: white;
+            font-size: 3.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: fadeInDown 1s ease-out;
+        }
 
-    .testimonial-text {
-      font-size: 1rem;
-      margin-bottom: 20px;
-      color: #000;
-    }
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    .author {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #000;
-    }
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.3rem;
+            margin-bottom: 50px;
+            font-weight: 300;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
 
-    @media (max-width: 992px) {
-      .testimonial-card {
-        flex: 1 1 calc(50% - 40px);
-      }
-    }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
-    @media (max-width: 600px) {
-      .testimonial-card {
-        flex: 1 1 100%;
-      }
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
 
-      .title {
-        font-size: 2rem;
-      }
-    }
-  </style>
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: none;
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out both;
+            animation-delay: calc(var(--card-index) * 0.1s);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 300% 100%;
+            animation: gradientFlow 3s ease infinite;
+        }
+
+        @keyframes gradientFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.3);
+        }
+
+        .card::after {
+            content: '"';
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 4rem;
+            color: rgba(102, 126, 234, 0.1);
+            font-family: serif;
+            line-height: 1;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 15px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .author-info strong {
+            color: #2d3748;
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .author-info .verified {
+            color: #48bb78;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .testimonial-message {
+            color: #4a5568;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-style: italic;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .testimonial-message::before {
+            content: '"';
+            position: absolute;
+            left: 0;
+            top: -5px;
+            font-size: 2rem;
+            color: #667eea;
+            font-family: serif;
+        }
+
+        .testimonial-timestamp {
+            color: #a0aec0;
+            font-size: 0.9rem;
+            font-style: normal;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .timestamp-icon {
+            font-size: 0.8rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            margin-bottom: 50px;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.3rem;
+            font-weight: 300;
+        }
+
+        .cta-section {
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            display: block;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 80%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            h2 {
+                font-size: 2.5rem;
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .stats-bar {
+                gap: 20px;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .btn-primary {
+                padding: 16px 30px;
+                font-size: 1rem;
+            }
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem !important;
+        }
+
+        .p-3 {
+            padding: 1rem !important;
+        }
+
+        .text-center {
+            text-align: center !important;
+        }
+
+        .mt-4 {
+            margin-top: 1.5rem !important;
+        }
+    </style>
 </head>
 <body>
-
-<div class="main-container">
-  <div class="title">Testimonials</div>
-  <div class="testimonials-grid">
-    
-    <div class="testimonial-card">
-      <div class="circle-image"></div>
-      <div class="testimonial-text">
-        "I used to struggle with math until I found this platform. The AI understood exactly where I needed help and guided me at my pace. Learning finally feels like it's made for me!"
-      </div>
-      <div class="author">~ Riya S., Class 10 Student</div>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
     </div>
 
-    <div class="testimonial-card">
-      <div class="circle-image"></div>
-      <div class="testimonial-text">
-        "This site has completely changed how my son studies. The personalized approach keeps him engaged, and I can track his progress in real-time. It's like having a tutor available 24/7."
-      </div>
-      <div class="author">~ Amit K., Parent</div>
+    <div class="container">
+        <h2>💬 What People Say</h2>
+        <p class="subtitle">Discover why our customers love working with us</p>
+        
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-number">⭐</span>
+                <span class="stat-label">Trusted Reviews</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">🚀</span>
+                <span class="stat-label">Quality Service</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">💎</span>
+                <span class="stat-label">Premium Experience</span>
+            </div>
+        </div>
+
+        <div class="testimonials-grid">
+            <!-- Django template logic preserved -->
+            {% for t in testimonials %}
+                <div class="card mb-3 p-3" style="--card-index: {{ forloop.counter0 }}">
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            {{ t.name|first|upper }}
+                        </div>
+                        <div class="author-info">
+                            <strong>{{ t.name }}</strong>
+                            <div class="verified">✓ Verified Customer</div>
+                        </div>
+                    </div>
+                    <div class="testimonial-message">{{ t.message }}</div>
+                    <div class="testimonial-timestamp">
+                        <span class="timestamp-icon">🕒</span>
+                        <small><i>{{ t.timestamp }}</i></small>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">💭</div>
+                    <p>No testimonials yet. Be the first to share your experience!</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="cta-section text-center mt-4">
+            <a href="{% url 'submit_testimonial' %}" class="btn btn-primary">
+                ✨ Submit Your Testimonial
+            </a>
+        </div>
     </div>
 
-    <div class="testimonial-card">
-      <div class="circle-image"></div>
-      <div class="testimonial-text">
-        "The AI-driven insights help me focus on students who really need attention. It’s not just smart tech — it’s a powerful tool that supports teachers and improves classroom outcomes."
-      </div>
-      <div class="author">~ Neha M., Teacher (CBSE Curriculum)</div>
-    </div>
+    <script>
+        // Add staggered animation to cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.setProperty('--card-index', index);
+            });
 
-    <div class="testimonial-card">
-      <div class="circle-image"></div>
-      <div class="testimonial-text">
-        "As someone returning to studies after years, this platform has been a game changer. The personalized roadmaps and AI mentors make even the toughest topics manageable and fun."
-      </div>
-      <div class="author">~ Anjali D., Career Switcher</div>
-    </div>
+            // Add hover effects for enhanced interactivity
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.zIndex = '10';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.zIndex = '1';
+                });
+            });
 
-    <div class="testimonial-card">
-      <div class="circle-image"></div>
-      <div class="testimonial-text">
-        "I love how the platform adapts to my learning style. Whether it’s coding or circuits, it gives real-time feedback and resources that match my level. It's truly next-gen education!"
-      </div>
-      <div class="author">~ Vikram R., Student</div>
-    </div>
+            // Add smooth scroll to CTA button
+            document.querySelector('.btn-primary').addEventListener('click', function(e) {
+                // Add a subtle click animation
+                this.style.transform = 'translateY(-3px) scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = 'translateY(-3px) scale(1)';
+                }, 150);
+            });
+        });
 
-    <div class="testimonial-card">
-      <div class="circle-image"></div>
-      <div class="testimonial-text">
-        "This isn’t just another e-learning site — it’s the future of education. The AI doesn’t just deliver content; it understands learners. It’s transforming how we teach and how we learn."
-      </div>
-      <div class="author">~ Dr. Sameer P., Academic Consultant</div>
-    </div>
+        // Create particle effect on mouse move
+        document.addEventListener('mousemove', function(e) {
+            if (Math.random() > 0.98) {
+                createParticle(e.clientX, e.clientY);
+            }
+        });
 
-  </div>
-</div>
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: fixed;
+                left: ${x}px;
+                top: ${y}px;
+                width: 4px;
+                height: 4px;
+                background: rgba(255, 255, 255, 0.6);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 1000;
+                animation: particleFade 2s ease-out forwards;
+            `;
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 2000);
+        }
 
+        // Add CSS animation for particles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes particleFade {
+                0% {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translateY(-100px) scale(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>

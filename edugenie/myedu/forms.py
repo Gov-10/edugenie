@@ -60,7 +60,7 @@
 
 
 from django import forms
-from .models import Student
+from .models import Student, Testimonial
 from django.contrib.auth.forms import UserCreationForm
 import uuid
 from django.contrib.auth.hashers import make_password
@@ -239,3 +239,12 @@ class ResumeUploadForm(forms.Form):
         required=True,
         help_text="Accepted formats: PDF, DOCX, TXT"
     )
+
+class TestimonialForm(forms.ModelForm):
+    class Meta:
+        model = Testimonial
+        fields = ['name', 'message']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'message': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+        }

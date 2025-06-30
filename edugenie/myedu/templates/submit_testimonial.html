@@ -1,0 +1,315 @@
+{% comment %} {%block content%}
+<h2>📝 Submit Your Testimonial</h2>
+{% if message %}<p><strong>{{ message }}</strong></p>{% endif %}
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-success">Submit</button>
+</form>
+{% endblock %} {% endcomment %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Your Testimonial</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 300% 100%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        h2 {
+            color: #2d3748;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .message {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-size: 1rem;
+            position: relative;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+            color: #2d3748;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-control:hover {
+            border-color: #cbd5e0;
+            background: white;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.6;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
+            background: linear-gradient(135deg, #38a169, #2f855a);
+        }
+
+        .btn-success:active {
+            transform: translateY(0);
+        }
+
+        .btn-success::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s;
+        }
+
+        .btn-success:hover::before {
+            left: 100%;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .form-floating {
+            position: relative;
+        }
+
+        .testimonial-icon {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 3rem;
+            color: rgba(102, 126, 234, 0.1);
+            transform: rotate(15deg);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .form-control {
+                padding: 14px 16px;
+            }
+            
+            .btn-success {
+                padding: 16px 30px;
+                font-size: 1rem;
+            }
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            opacity: 0.1;
+            clip-path: polygon(0 30px, 100% 0, 100% 100%, 0 100%);
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            opacity: 0.1;
+        }
+
+        .floating-elements::before {
+            content: '💬';
+            font-size: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="floating-elements"></div>
+        <div class="wave"></div>
+        
+        <h2><span class="icon">📝</span>Submit Your Testimonial</h2>
+        <p class="subtitle">Share your experience and help others discover our services</p>
+        
+        <!-- Django template logic preserved -->
+        {% if message %}
+            <div class="message">{{ message }}</div>
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                 {{ form.name }}
+        <label for="{{ form.name.id_for_label }}">Enter name</label>
+            </div>
+            
+            <div class="form-group">
+                {{ form.message }}
+                <label for="{{ form.message.id_for_label }}">Your message</label>
+            </div>
+            
+            <button type="submit" class="btn btn-success">
+                <span class="icon">✨</span>Submit Testimonial
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Add smooth focus animations
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+
+        // Add loading state to button
+        document.querySelector('form').addEventListener('submit', function() {
+            const button = this.querySelector('.btn-success');
+            button.innerHTML = '<span class="icon">⏳</span>Submitting...';
+            button.disabled = true;
+        });
+    </script>
+</body>
+</html>

@@ -931,3 +931,33 @@ def quiz_preference(request):
     else:
         form = QuizPreferenceForm()
     return render(request, 'quiz_custom.html', {'form': form})
+
+# views.py
+from django.shortcuts import render, redirect
+from .forms import TestimonialForm
+from .models import Testimonial
+from .utils.ai import is_testimonial_appropriate  # import your AI moderation logic
+
+def testimonial_submit(request):
+    message = None
+    if request.method == "POST":
+        form = TestimonialForm(request.POST)
+        if form.is_valid():
+            testimonial = form.save(commit=False)
+            if is_testimonial_appropriate(testimonial.message):
+                testimonial.approved = True
+                testimonial.save()
+                message = "✅ Thank you! Your testimonial has been submitted."
+            else:
+                message = "❌ Sorry, your message did not meet our guidelines."
+    else:
+        form = TestimonialForm()
+
+    return render(request, "submit_testimonial.html", {
+        'form': form,
+        'message': message
+    })
+
+def show_testimonials(request):
+    testimonials = Testimonial.objects.filter(approved=True).order_by('-timestamp')
+    return render(request, "testimonials.html", {"testimonials": testimonials})

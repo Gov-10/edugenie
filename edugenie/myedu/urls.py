@@ -10,7 +10,7 @@ urlpatterns = [
     path('sign_up/', views.signup, name='sign_up'),
     path('sign_in/', views.signin, name = "sign_in" ),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
-    path('testimonials/', views.testimonials, name='testimonials'),
+    path('testimonials/', views.show_testimonials, name='testimonials'),
     path('chat/', views.chat_page, name='chat'),
     path('get-response/', views.chat_response, name='get_response'),
     path('stud/', views.stud, name='stud'),
@@ -21,6 +21,7 @@ urlpatterns = [
     path('quiz_preference/', views.quiz_preference, name='quiz_preference'),
     path('render_quiz/', views.render_quiz, name='render_quiz'),
     path('resume_tester/', views.resume_tester, name='resume_tester'),
+    path('submit_testimonial/', views.testimonial_submit, name='submit_testimonial'),
 
     path('password_reset/', auth_views.PasswordResetView.as_view(template_name= 'password_reset.html'), name='password_reset'),
     path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(template_name = 'pass_set.html'), name='password_reset_done'),
