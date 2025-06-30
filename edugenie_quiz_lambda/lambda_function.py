@@ -1,6 +1,10 @@
 import json
 import boto3
 import requests
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 
 def lambda_handler(event, context):
     preferences = json.loads(event['body'])
@@ -49,7 +53,7 @@ Now generate the quiz.
 
 
 
-    GEMINI_API_KEY = "AIzaSyBfGG5OlefAsUAqFzSzndUfuptJM0LiLhU"
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key={GEMINI_API_KEY}"
     headers = {"Content-Type": "application/json"}
 
