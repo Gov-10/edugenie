@@ -177,6 +177,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 import tempfile
 import boto3
 import time
+import requests
 
 load_dotenv()
 gemini_api_key = os.getenv("GEMINI_API_KEY")
@@ -487,126 +488,42 @@ def extract_text(pdf):
     pdf_document.close()
     return "\n\n".join(pages)
 
-@csrf_exempt
-@login_required
-def quiz_preference(request):
-    if request.method == "POST":
-        form = QuizPreferenceForm(request.POST)
-        if form.is_valid():
-            preferences = form.cleaned_data
-            print(">> Quiz Preferences:", preferences)
-            prompt = (
-                "You are a quiz generator and an exam paper setter. Please be very accurate and avoid giving any wrong answers. You are allowed to use any website or any book for reference.Based on the user's preferences, "
-                "generate a quiz with the following details:\n"
-                f"Subject: {preferences['topic']}\n"
-                f"Difficulty: {preferences['difficulty']}\n"
-                f"Number of Questions: {preferences['number_of_questions']}\n"
-                f"Question Type: {preferences['type_of_questions']}\n"
-                f"Timer: {preferences['timer']}\n"
-                "Please format the quiz clearly with numbered questions, "
-                "and include the correct answer below each question as 'Answer: ...'\n"
-                "Each option must be labeled as A. / B. / C. / D.  and mention the correct answer using the letter (e.g., Correct Answer: C)\n"
-                "Please ensure the quiz is engaging and educational, suitable for students preparing for exams.\n\n"
-                "Please do not include text like Time's up! Check your answers above.**   Directly provide the quiz content without any additional instructions or comments.\n"
-            )
-            try:
-                response = model.generate_content(prompt)
-                quiz_text = response.text.strip()
-                print(">>> AI Raw Output:\n", quiz_text)
-                request.session['quiz_text'] = quiz_text  # for next view
-                return redirect('render_quiz') 
-            except Exception as e:
-                print("Gemini Error:", str(e))
-            print(">> Quiz Preferences:", preferences)
-            messages.success(request, "Your quiz preferences have been saved successfully!")
-    else:
-        form = QuizPreferenceForm()
-    return render(request, 'quiz_custom.html', {'form': form})
+# @csrf_exempt
+# @login_required
+# def quiz_preference(request):
+#     if request.method == "POST":
+#         form = QuizPreferenceForm(request.POST)
+#         if form.is_valid():
+#             preferences = form.cleaned_data
+#             print(">> Quiz Preferences:", preferences)
+#             prompt = (
+#                 "You are a quiz generator and an exam paper setter. Please be very accurate and avoid giving any wrong answers. You are allowed to use any website or any book for reference.Based on the user's preferences, "
+#                 "generate a quiz with the following details:\n"
+#                 f"Subject: {preferences['topic']}\n"
+#                 f"Difficulty: {preferences['difficulty']}\n"
+#                 f"Number of Questions: {preferences['number_of_questions']}\n"
+#                 f"Question Type: {preferences['type_of_questions']}\n"
+#                 f"Timer: {preferences['timer']}\n"
+#                 "Please format the quiz clearly with numbered questions, "
+#                 "and include the correct answer below each question as 'Answer: ...'\n"
+#                 "Each option must be labeled as A. / B. / C. / D.  and mention the correct answer using the letter (e.g., Correct Answer: C)\n"
+#                 "Please ensure the quiz is engaging and educational, suitable for students preparing for exams.\n\n"
+#                 "Please do not include text like Time's up! Check your answers above.**   Directly provide the quiz content without any additional instructions or comments.\n"
+#             )
+#             try:
+#                 response = model.generate_content(prompt)
+#                 quiz_text = response.text.strip()
+#                 print(">>> AI Raw Output:\n", quiz_text)
+#                 request.session['quiz_text'] = quiz_text  # for next view
+#                 return redirect('render_quiz') 
+#             except Exception as e:
+#                 print("Gemini Error:", str(e))
+#             print(">> Quiz Preferences:", preferences)
+#             messages.success(request, "Your quiz preferences have been saved successfully!")
+#     else:
+#         form = QuizPreferenceForm()
+#     return render(request, 'quiz_custom.html', {'form': form})
 
-# def parse_ai_quiz(quiz_text):
-#     import re
-#     questions = []
-#     blocks = re.split(r"\n(?=\d+\.)", quiz_text.strip())
-    
-#     for block in blocks:
-#         lines = block.strip().split('\n')
-#         if len(lines) < 2:
-#             continue
-
-#         question_line = lines[0].strip()
-#         question_text = re.sub(r"^\d+\.\s*", "", question_line)
-
-#         options = []
-#         correct = ""
-
-#         for line in lines[1:]:
-#             line = line.strip()
-#             if not line or line.startswith("```"):
-#                 continue
-
-#             # Match labeled options: a) xyz
-#             opt_match = re.match(r"([a-dA-D])\)\s+(.*)", line)
-#             if opt_match:
-#                 label = opt_match.group(1).lower()
-#                 option_text = opt_match.group(2).strip()
-#                 options.append((label, option_text))  # store as tuple (value, label)
-#             elif line.lower().startswith("correct answer") or line.lower().startswith("answer"):
-#                 match = re.search(r"([a-d])\)", line.lower())
-#                 if match:
-#                     correct = match.group(1).lower()
-
-#         if options:
-#             questions.append({
-#                 "question": question_text,
-#                 "options": options,  # list of (a,b,c,d)
-#                 "correct": correct  # just the letter
-#             })
-#     print(">> Parsed Questions:", questions)
-#     return questions
-
-# def parse_ai_quiz(quiz_text):
-#     import re
-
-#     # Split questions by "**1." or "1."
-#     blocks = re.split(r"\*\*\s*\d+\.\s+|\n\d+\.\s+", quiz_text.strip())
-#     questions = []
-
-#     for block in blocks:
-#         block = block.strip()
-#         if not block or len(block) < 5:
-#             continue
-
-#         lines = block.split('\n')
-#         question_text = lines[0].strip()
-#         options = []
-#         correct = ""
-
-#         for line in lines[1:]:
-#             line = line.strip()
-
-#             # Skip code blocks or empty
-#             if line.startswith("```") or not line:
-#                 continue
-
-#             # Match options like A. or A)
-#             opt_match = re.match(r"([A-Da-d])[).]?\s+(.*)", line)
-#             if opt_match:
-#                 options.append((opt_match.group(1).lower(), opt_match.group(2).strip()))
-
-#             # Match Answer: C (with or without bold)
-#             ans_match = re.search(r"answer[:\s]*([A-D])", line, re.IGNORECASE)
-#             if ans_match:
-#                 correct = ans_match.group(1).lower()
-
-#         if question_text and options:
-#             questions.append({
-#                 "question": question_text,
-#                 "options": options,
-#                 "correct": correct
-#             })
-
-#     print(">> Parsed Questions:", questions)
-#     return questions
 
 def parse_ai_quiz(quiz_text):
     import re
@@ -762,3 +679,26 @@ def resume_tester(request):
         'parsed_text': parsed_text
     })
 
+@csrf_exempt
+@login_required
+def quiz_preference(request):
+    if request.method == "POST":
+        form = QuizPreferenceForm(request.POST)
+        if form.is_valid():
+            preferences = form.cleaned_data
+            try:
+                lambda_api_url = "https://u9pmy5pmn4.execute-api.ap-south-1.amazonaws.com/prod/generate_quiz_function"
+                response = requests.post(lambda_api_url, json=preferences)
+                print("Lambda response:", response.text)
+                if response.status_code == 200:
+                    quiz_text = response.json().get("quiz", "")
+                    request.session['quiz_text'] = quiz_text
+                    return redirect('render_quiz')
+                else:
+                    messages.error(request, "Lambda returned error: " + response.text)
+            except Exception as e:
+                messages.error(request, f"❌ Error calling Lambda: {str(e)}")
+                print("Exception:", str(e))
+    else:
+        form = QuizPreferenceForm()
+    return render(request, 'quiz_custom.html', {'form': form})
