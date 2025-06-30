@@ -911,42 +911,24 @@ btn.addEventListener("click", () => {
   <section class="hero">
     <h1>Accelerate Your Career Journey</h1>
     <p>Transform your professional aspirations into reality. Connect with top companies, access exclusive internships, and develop the skills that matter in today's competitive market.</p>
-    <a href="#services" class="cta-primary">Explore Opportunities</a>
-    <a href="/register" class="cta-secondary">Join Now</a>
+    <a href="/sign_up/" class="cta-secondary">Join Now</a>
   </section>
 
   <!-- Stats Section -->
-  <section class="stats">
-    <div class="stat-item">
-      <div class="stat-number">50K+</div>
-      <div class="stat-label">Job Placements</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number">500+</div>
-      <div class="stat-label">Partner Companies</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number">15K+</div>
-      <div class="stat-label">Internships</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number">95%</div>
-      <div class="stat-label">Success Rate</div>
-    </div>
-  </section>
-
+  
   <!-- Services Section -->
   <section id="services" class="services">
     <div class="service-card">
       <span class="service-icon">💼</span>
-      <h3>Premium Job Matching</h3>
-      <p>AI-powered job matching that connects you with opportunities that align with your skills, experience, and career goals.</p>
+      <h3>Summarizer Pro</h3>
+      <p>AI-powered pdf summarizer and notes maker that helps you to prepare for college exams/job interviews</p>
       <ul class="service-features">
-        <li>Personalized job recommendations</li>
-        <li>Direct recruiter connections</li>
+        <li>Personalized features</li>
+        <li>Simple Language</li>
         <li>Interview preparation support</li>
-        <li>Salary negotiation guidance</li>
+        <li>Interactive format</li>
       </ul>
+       <button onClick= openPdf()>Check it out!!</button>
     </div>
 
     <div class="service-card">
@@ -961,29 +943,9 @@ btn.addEventListener("click", () => {
       <button onClick= openQuiz()>Click here to play</button>
     </div>
 
-    <div class="service-card">
-      <span class="service-icon">📈</span>
-      <h3>Skill Development</h3>
-      <p>Industry-relevant courses and certifications designed to enhance your employability and career growth.</p>
-      <ul class="service-features">
-        <li>Technical skill training</li>
-        <li>Soft skills development</li>
-        <li>Industry certifications</li>
-        <li>Portfolio building</li>
-      </ul>
-    </div>
+   
 
-    <div class="service-card">
-      <span class="service-icon">🤝</span>
-      <h3>Networking Hub</h3>
-      <p>Connect with industry professionals, alumni, and peers to expand your professional network and discover opportunities.</p>
-      <ul class="service-features">
-        <li>Industry expert interactions</li>
-        <li>Alumni network access</li>
-        <li>Professional events</li>
-        <li>Career guidance sessions</li>
-      </ul>
-    </div>
+   
 
     <div class="service-card">
       <span class="service-icon">📊</span>
@@ -998,17 +960,7 @@ btn.addEventListener("click", () => {
       <button onClick= openResume()>Test it out!!</button>
     </div>
 
-    <div class="service-card">
-      <span class="service-icon">🎓</span>
-      <h3>Interview Mastery</h3>
-      <p>Comprehensive interview preparation including mock interviews, feedback sessions, and confidence building.</p>
-      <ul class="service-features">
-        <li>Mock interview sessions</li>
-        <li>Technical interview prep</li>
-        <li>Behavioral interview training</li>
-        <li>Confidence building workshops</li>
-      </ul>
-    </div>
+   
   </section>
 
   <!-- Chatbot Icon -->
@@ -1022,7 +974,10 @@ btn.addEventListener("click", () => {
     const logo = document.querySelector(".logo");
     const rocket = document.getElementById("rocket");
 
-
+    function openPdf()
+    {
+      window.location = "/pdf_summarizer/";
+    }
     function openResume()
     {
       window.location = "/resume_tester/";
