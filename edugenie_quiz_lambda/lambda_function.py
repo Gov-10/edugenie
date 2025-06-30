@@ -13,7 +13,6 @@ def lambda_handler(event, context):
                 "body": json.dumps({"error": "Invalid JSON body"})
             }
 
-        
 
     topic = body.get("topic", "")
     num_questions = body.get("number_of_questions", 5)
@@ -21,18 +20,36 @@ def lambda_handler(event, context):
     type_qs = body.get("type_of_questions", "mcq")
 
     prompt = (
-        "You are a quiz generator and an exam paper setter. Please be very accurate and avoid giving any wrong answers. You are allowed to use any website or any book for reference.Based on the user's preferences, "
-                "generate a quiz with the following details:\n"
-                f"Subject: {topic}\n"
-                f"Difficulty: {difficulty}\n"
-                f"Number of Questions: {num_questions}\n"
-                f"Question Type: {type_qs}\n"
-                "Please format the quiz clearly with numbered questions, "
-                "and include the correct answer below each question as 'Answer: ...'\n"
-                "Each option must be labeled as A. / B. / C. / D.  and mention the correct answer using the letter (e.g., Correct Answer: C)\n"
-                "Please ensure the quiz is engaging and educational, suitable for students preparing for exams.\n\n"
-                "Please do not include text like Time's up! Check your answers above.**   Directly provide the quiz content without any additional instructions or comments.\n"
-    )
+    "You are an experienced exam paper setter and quiz generator. Your task is to create an accurate, factual, and well-structured quiz based on the following user preferences:\n\n"
+    f"- Subject: {topic}\n\n"
+    f"- Difficulty: {difficulty}\n\n"
+    f"-Number of Questions to generate: {num_questions} (strictly this number)\n\n"
+    f"- Type of Questions: {type_qs}\n\n"
+    "⚠️ Important Guidelines:\n\n"
+    "1. Do NOT hallucinate facts. Only include questions with clear, verifiable answers.\n\n"
+    "2. The correct answer must be 100% accurate and based on commonly accepted knowledge.\n\n"
+    "3. Format strictly as:\n"
+    "   - Question number.\n"
+    "   - Four options (A., B., C., D.)\n"
+    "   - Below each question, write `Correct Answer: <letter>`\n"
+    "4. Do NOT include instructions, explanations, comments, or filler text.\n"
+    "5. Make sure the quiz is suitable for high school/college-level students.\n\n"
+    "💡 Example format: (just for structure, do not repeat):\n"
+    "1. What is the capital of France?\n"
+    "A. Berlin\n"
+    "B. Madrid\n"
+    "C. Paris\n"
+    "D. Rome\n"
+    "Correct Answer: C\n\n"
+    "6. Ensure the questions are diverse and cover different aspects of the topic.\n\n"
+    "7. Do NOT include any questions that are too easy or too difficult for the specified difficulty level.\n\n"
+    "8. Do NOT include any questions that are too similar to each other.\n\n"
+    "9. Do NOT include any questions that are too vague or ambiguous.\n\n"
+    "Do NOT show answers in the response.\n\n"
+    "⚠️ Important: Do NOT include any additional text, explanations, or comments. Only provide the questions in the specified format.\n\n"
+    f"Generate exactly {num_questions} questions now, strictly following the format above.\n"
+)
+
 
     bedrock = boto3.client("bedrock-runtime", region_name="ap-south-1")
 
