@@ -108,30 +108,31 @@ WSGI_APPLICATION = 'edugenie_proj.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'edugenie',
+#         'USER': 'postgres',
+#         'PASSWORD': 'Govind100$',
+#         'HOST': 'edugenie-db.c5uyig40gitn.ap-south-1.rds.amazonaws.com',
+#         'PORT': '5432',
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'edugenie',
-        'USER': 'postgres',
-        'PASSWORD': 'Govind100$',
-        'HOST': 'edugenie-db.c5uyig40gitn.ap-south-1.rds.amazonaws.com',
+        'NAME': 'neondb',
+        'USER': 'neondb_owner',
+        'PASSWORD': os.getenv("NEON_PASSWORD"),  # Use environment variable for password
+        'HOST': os.getenv("NEON_HOST"),  # Use environment variable for host
         'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require',
+        }
     }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django_cockroachdb',
-#         'NAME': 'defaultdb',
-#         'USER': os.getenv("USER"),
-#         'PASSWORD': os.getenv("PASSWORD"),
-#         'HOST': 'minor-codfish-11880.j77.aws-ap-south-1.cockroachlabs.cloud',
-#         'PORT': '26257',
-#         'OPTIONS': {
-#             'sslmode': 'require',
-#         },
-#     }
-# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
