@@ -663,6 +663,7 @@ def render_quiz(request):
 @csrf_exempt
 def resume_tester(request):
     parsed_text = None
+    html_response = None
     if request.method == "POST":
         form = ResumeUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -671,118 +672,227 @@ def resume_tester(request):
             print(">> Resume file:", resume.name)
             parsed_text = parse_resume(resume)
             print(">> Parsed Text:", parsed_text)
-            prompt = f"""
-You are a professional resume reviewer and career mentor. Please analyze the following resume text and provide comprehensive feedback in a beautifully formatted, visually appealing response.
+#             prompt = f"""
+# You are a professional resume reviewer and career mentor. Please analyze the following resume text and provide comprehensive feedback in a beautifully formatted, visually appealing response.
 
-Resume Text:
+# Resume Text:
+# {parsed_text}
+
+# FORMATTING INSTRUCTIONS:
+# Please structure your response using the following beautiful, professional format with proper markdown styling:
+
+# # 📋 Resume Analysis Report
+
+# ## 👤 **Candidate Overview**
+# [Brief 2-3 sentence summary of the candidate's profile]
+
+# ---
+
+# ## ⭐ **Strengths & Highlights**
+# ### 🎯 What's Working Well:
+# - **[Strength Category]**: [Specific detail]
+# - **[Strength Category]**: [Specific detail]
+# - **[Strength Category]**: [Specific detail]
+
+# ---
+
+# ## 🔧 **Areas for Improvement**
+
+# ### 📝 **Content Enhancement**
+# | Section | Current Issue | Recommended Action |
+# |---------|---------------|-------------------|
+# | [Section] | [Issue] | [Specific improvement] |
+# | [Section] | [Issue] | [Specific improvement] |
+
+# ### 🎨 **Formatting & Structure**
+# - **Issue**: [Problem description]
+#   - *Solution*: [Specific fix]
+# - **Issue**: [Problem description]
+#   - *Solution*: [Specific fix]
+
+# ---
+
+# ## 🚀 **Action Plan for Improvement**
+
+# ### 🎯 **Priority 1 - Critical Changes**
+# 1. **[Action Item]**
+#    - Why: [Explanation]
+#    - How: [Specific steps]
+
+# 2. **[Action Item]**
+#    - Why: [Explanation]
+#    - How: [Specific steps]
+
+# ### 📈 **Priority 2 - Enhancement Opportunities**
+# 1. **[Action Item]**
+#    - Impact: [Expected benefit]
+#    - Implementation: [How to do it]
+
+# ---
+
+# ## 🤖 **ATS Compatibility Score**
+
+# ### 📊 **Overall ATS Score: [X]/100**
+
+# | Criteria | Score | Status | Notes |
+# |----------|-------|--------|-------|
+# | **Keyword Optimization** | [X]/25 | [🟢/🟡/🔴] | [Specific feedback] |
+# | **Format Compatibility** | [X]/25 | [🟢/🟡/🔴] | [Specific feedback] |
+# | **Section Organization** | [X]/25 | [🟢/🟡/🔴] | [Specific feedback] |
+# | **Contact Information** | [X]/25 | [🟢/🟡/🔴] | [Specific feedback] |
+
+# **Legend:** 🟢 Excellent | 🟡 Needs Improvement | 🔴 Critical Issue
+
+# ---
+
+# ## 💡 **Industry-Specific Recommendations**
+# [Tailored advice based on the candidate's target industry/role]
+
+# ---
+
+# ## ✨ **Next Steps**
+# ### 📅 **30-Day Improvement Timeline**
+# - **Week 1**: [Specific tasks]
+# - **Week 2**: [Specific tasks]
+# - **Week 3**: [Specific tasks]
+# - **Week 4**: [Final review and optimization]
+
+# ---
+
+# ## 🎯 **Interview Readiness Prediction**
+# **Current State**: [Assessment]
+# **With Improvements**: [Projected outcome]
+
+# ---
+
+# *💪 Remember: Your resume is your personal marketing document. With these improvements, you'll be well-positioned to capture recruiters' attention and land those interview opportunities!*
+
+# TONE GUIDELINES:
+# - Be encouraging and supportive like a caring mentor
+# - Use positive, constructive language
+# - Provide specific, actionable advice
+# - Include motivational elements
+# - Be honest about weaknesses while maintaining optimism
+# - Focus on growth and potential
+
+# ANALYSIS DEPTH:
+# - Provide detailed, section-by-section feedback
+# - Include specific examples and suggestions
+# - Give honest ATS scoring with clear explanations
+# - Offer industry-specific insights where relevant
+# - Create a clear action plan for improvement
+
+# End Goal: Transform this resume into an interview-generating document that stands out to both ATS systems and human recruiters.
+# """
+            prompt = f"""
+You are an experienced **career mentor and resume reviewer** with deep knowledge of ATS systems, recruitment best practices, and formatting standards for technical and non-technical roles.
+
+Your task is to **analyze the following resume text** and provide a **comprehensive, visually structured, and markdown-formatted** report that is both **constructive** and **motivational**.
+
+---
+
+## 📄 Resume Text:
 {parsed_text}
 
-FORMATTING INSTRUCTIONS:
-Please structure your response using the following beautiful, professional format with proper markdown styling:
+---
+
+## 🧠 INSTRUCTIONS:
+Use the following **sectioned format** and markdown layout for the response. Make it visually pleasing, with emojis, tables, and concise yet insightful suggestions.
 
 # 📋 Resume Analysis Report
 
 ## 👤 **Candidate Overview**
-[Brief 2-3 sentence summary of the candidate's profile]
+Briefly summarize the candidate's background, area of expertise, and what kind of roles they may be suited for (2–3 sentences).
 
 ---
 
 ## ⭐ **Strengths & Highlights**
 ### 🎯 What's Working Well:
-- **[Strength Category]**: [Specific detail]
-- **[Strength Category]**: [Specific detail]
-- **[Strength Category]**: [Specific detail]
+- **[Category]**: [Highlight detail]
+- **[Category]**: [Highlight detail]
+- **[Category]**: [Highlight detail]
+
+Be specific and appreciative. Highlight what stands out.
 
 ---
 
 ## 🔧 **Areas for Improvement**
 
-### 📝 **Content Enhancement**
-| Section | Current Issue | Recommended Action |
-|---------|---------------|-------------------|
-| [Section] | [Issue] | [Specific improvement] |
-| [Section] | [Issue] | [Specific improvement] |
+### 📝 Content Enhancement (Table Format)
+Use this table to show weak spots and solutions:
 
-### 🎨 **Formatting & Structure**
-- **Issue**: [Problem description]
-  - *Solution*: [Specific fix]
-- **Issue**: [Problem description]
-  - *Solution*: [Specific fix]
+| Section        | Current Issue                          | Recommended Action                    |
+|----------------|----------------------------------------|----------------------------------------|
+| [Example: Summary] | Vague wording, lacks impact         | Rewrite with role-specific language    |
+| [Example: Skills]   | Too generic                        | Group by category and use keywords     |
+
+### 🎨 Formatting & Structure
+- **Issue**: [Brief formatting flaw]
+  - *Fix*: [What should be improved and how]
 
 ---
 
 ## 🚀 **Action Plan for Improvement**
 
-### 🎯 **Priority 1 - Critical Changes**
-1. **[Action Item]**
-   - Why: [Explanation]
-   - How: [Specific steps]
+### 🎯 Priority 1 – Critical Fixes
+1. **[Item]**
+   - *Why it matters:* [Short explanation]
+   - *How to fix:* [Practical next steps]
 
-2. **[Action Item]**
-   - Why: [Explanation]
-   - How: [Specific steps]
+2. **[Item]**
+   - *Why it matters:* [...]
+   - *How to fix:* [...]
 
-### 📈 **Priority 2 - Enhancement Opportunities**
-1. **[Action Item]**
-   - Impact: [Expected benefit]
-   - Implementation: [How to do it]
+### 📈 Priority 2 – Nice-to-Have Enhancements
+1. **[Item]**
+   - *Benefit:* [Impact on recruiter interest or ATS]
+   - *Implementation:* [Brief how-to]
 
 ---
 
 ## 🤖 **ATS Compatibility Score**
 
-### 📊 **Overall ATS Score: [X]/100**
+### 📊 Estimated ATS Score: **[XX]/100**
 
-| Criteria | Score | Status | Notes |
-|----------|-------|--------|-------|
-| **Keyword Optimization** | [X]/25 | [🟢/🟡/🔴] | [Specific feedback] |
-| **Format Compatibility** | [X]/25 | [🟢/🟡/🔴] | [Specific feedback] |
-| **Section Organization** | [X]/25 | [🟢/🟡/🔴] | [Specific feedback] |
-| **Contact Information** | [X]/25 | [🟢/🟡/🔴] | [Specific feedback] |
+| Category               | Score | Status | Notes                          |
+|------------------------|-------|--------|--------------------------------|
+| Keyword Optimization   | XX/25 | 🟢🟡🔴 | [Comment]                      |
+| Format Compatibility   | XX/25 | 🟢🟡🔴 | [Comment]                      |
+| Section Organization   | XX/25 | 🟢🟡🔴 | [Comment]                      |
+| Contact Information    | XX/25 | 🟢🟡🔴 | [Comment]                      |
 
-**Legend:** 🟢 Excellent | 🟡 Needs Improvement | 🔴 Critical Issue
+🟢 = Excellent | 🟡 = Moderate | 🔴 = Needs Work
 
 ---
 
 ## 💡 **Industry-Specific Recommendations**
-[Tailored advice based on the candidate's target industry/role]
+Give tailored advice based on the resume content. If the candidate targets tech roles, suggest relevant buzzwords, portfolio tips, etc.
 
 ---
 
 ## ✨ **Next Steps**
-### 📅 **30-Day Improvement Timeline**
-- **Week 1**: [Specific tasks]
-- **Week 2**: [Specific tasks]
-- **Week 3**: [Specific tasks]
-- **Week 4**: [Final review and optimization]
+
+### 📅 30-Day Optimization Timeline
+
+- **Week 1**: [e.g., Revise summary, fix contact info]
+- **Week 2**: [e.g., Optimize project descriptions]
+- **Week 3**: [e.g., Polish formatting, use ATS keywords]
+- **Week 4**: [e.g., Final proofing and mock interview prep]
 
 ---
 
-## 🎯 **Interview Readiness Prediction**
-**Current State**: [Assessment]
-**With Improvements**: [Projected outcome]
+## 🎯 Interview Readiness
+
+- **Current Status**: [Honest evaluation]
+- **Post-Improvement Prediction**: [Encouraging insight]
 
 ---
 
-*💪 Remember: Your resume is your personal marketing document. With these improvements, you'll be well-positioned to capture recruiters' attention and land those interview opportunities!*
+🎓 *Remember*: A resume isn’t just a list — it’s your story. These changes will help you stand out to both **ATS bots** and **human reviewers**, and bring you one step closer to that **dream interview.**
 
-TONE GUIDELINES:
-- Be encouraging and supportive like a caring mentor
-- Use positive, constructive language
-- Provide specific, actionable advice
-- Include motivational elements
-- Be honest about weaknesses while maintaining optimism
-- Focus on growth and potential
-
-ANALYSIS DEPTH:
-- Provide detailed, section-by-section feedback
-- Include specific examples and suggestions
-- Give honest ATS scoring with clear explanations
-- Offer industry-specific insights where relevant
-- Create a clear action plan for improvement
-
-End Goal: Transform this resume into an interview-generating document that stands out to both ATS systems and human recruiters.
+Be motivational, realistic, and focused on growth. Avoid vague advice. Always give practical, specific tips.
 """
+  
             try:
                 response = model.generate_content(prompt)
                 parsed_text = response.text.strip()
