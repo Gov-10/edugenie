@@ -528,7 +528,7 @@ def extract_text(pdf):
 def parse_ai_quiz(quiz_text):
     import re
 
-    blocks = re.split(r"\*\*\s*\d+\.\s+|\n\d+\.\s+", quiz_text.strip())
+    blocks = re.split(r"(?:\n|\A)(?:Question\s*)?\d+[:.\)]\s+", quiz_text.strip())
     questions = []
 
     for block in blocks:
@@ -544,37 +544,35 @@ def parse_ai_quiz(quiz_text):
         for line in lines:
             line = line.strip()
 
-            # Skip empty lines
             if not line:
                 continue
 
-            # Match options like A. or A)
+            # Match options A–D
             opt_match = re.match(r"([A-Da-d])[).]?\s+(.*)", line)
             if opt_match:
                 options.append((opt_match.group(1).lower(), opt_match.group(2).strip()))
                 continue
 
             # Match correct answer
-            ans_match = re.search(r"answer[:\s]*([A-Da-d])", line, re.IGNORECASE)
+            ans_match = re.search(r"(Correct\s*)?Answer[:\s]*([A-Da-d])", line, re.IGNORECASE)
             if ans_match:
-                correct = ans_match.group(1).lower()
+                correct = ans_match.group(2).lower()
                 continue
 
-            # Otherwise, treat as part of question
             question_lines.append(line)
 
-        # Combine full question including any code
         question_text = '\n'.join(question_lines).strip()
-
-        if question_text and options:
-            questions.append({
-                "question": question_text,
-                "options": options,
-                "correct": correct
-            })
+        if question_text and len(options) == 4 and correct in ['a', 'b', 'c', 'd']:
+           questions.append({
+        "question": question_text,
+        "options": options,
+        "correct": correct
+    })
 
     print(">> Parsed Questions:", questions)
     return questions
+
+
 # def parse_ai_quiz(quiz_text):
 #     import re
 #     questions = []
