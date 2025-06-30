@@ -176,6 +176,7 @@ from .utils.resume_parse import parse_resume
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import tempfile
 import boto3
+import time
 
 load_dotenv()
 gemini_api_key = os.getenv("GEMINI_API_KEY")
@@ -760,3 +761,4 @@ def resume_tester(request):
         'form': form,
         'parsed_text': parsed_text
     })
+
